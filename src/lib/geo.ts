@@ -12,7 +12,7 @@ export interface GeoLocationState {
   cityName: string
   areaName: string
   radius: number // in km (2, 5, 10, 20, 50)
-  detectionType: 'gps' | 'manual' | 'none'
+  detectionType: 'gps' | 'manual' | 'url' | 'none'
 }
 
 /**

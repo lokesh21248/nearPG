@@ -81,8 +81,8 @@ export function Header() {
               title="Select Location"
             >
               <MapPin size={13} className="text-blue-600 shrink-0" />
-              <span className="max-w-[90px] sm:max-w-[140px] truncate">
-                {userLoc.cityName || userLoc.stateName || 'Select Location'}
+              <span className="max-w-[100px] sm:max-w-[150px] truncate font-extrabold">
+                {userLoc.areaName ? `📍 ${userLoc.areaName}` : userLoc.cityName ? `📍 ${userLoc.cityName}` : userLoc.stateName ? `📍 ${userLoc.stateName}` : '📍 Select Location'}
               </span>
               <ChevronDown size={13} className="text-slate-400 shrink-0" />
             </button>

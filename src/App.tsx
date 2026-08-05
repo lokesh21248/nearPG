@@ -39,6 +39,9 @@ function App() {
                   {/* ── Public ── */}
                   <Route path="/" element={<HomePage />} />
                   <Route path="/search" element={<SearchPage />} />
+                  <Route path="/state/:stateSlug" element={<SearchPage />} />
+                  <Route path="/state/:stateSlug/:citySlug" element={<SearchPage />} />
+                  <Route path="/state/:stateSlug/:citySlug/:areaSlug" element={<SearchPage />} />
                   <Route path="/map" element={<MapPage />} />
                   <Route path="/pg/:id" element={<PGDetailPage />} />
                 <Route path="/login" element={<LoginPage />} />

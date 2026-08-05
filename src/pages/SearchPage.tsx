@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useMemo, useEffect } from 'react'
+import { useSearchParams, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PageWrapper } from '../components/layout/PageWrapper'
@@ -11,22 +11,53 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { SearchX, X, MapPin } from 'lucide-react'
 import { useSearchListings } from '../hooks/useListings'
 import type { SearchParams } from '../services/listings.service'
-import LocationSelectorGroup from '../components/ui/LocationSelectorGroup'
+import { useUserLocation } from '../contexts/LocationContext'
+import { locationService } from '../services/location.service'
 
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { stateSlug, citySlug, areaSlug } = useParams()
+  const { location: userLoc, selectLocation, setIsModalOpen } = useUserLocation()
 
-  // Parse filters from search params
+  // Sync route params if present
+  useEffect(() => {
+    if (stateSlug) {
+      locationService.getLocationBySlug(stateSlug, citySlug, areaSlug).then(resolved => {
+        if (resolved) {
+          selectLocation({
+            stateId: resolved.stateId,
+            cityId: resolved.cityId,
+            areaId: resolved.areaId,
+            stateName: resolved.stateName,
+            cityName: resolved.cityName,
+            areaName: resolved.areaName,
+            source: 'url',
+          })
+        }
+      })
+    }
+  }, [stateSlug, citySlug, areaSlug, selectLocation])
+
+  // Combine URL search params + global location store values
   const filters: SearchParams = useMemo(() => {
     const p: Record<string, unknown> = {}
     searchParams.forEach((val, key) => {
       if (key === 'amenities' || key === 'sharing') p[key] = val.split(',')
       else p[key] = val
     })
+
+    // If not set in query params, fallback to global user location store
+    if (!p.state_id && userLoc.stateId) p.state_id = userLoc.stateId
+    if (!p.city_id && userLoc.cityId) p.city_id = userLoc.cityId
+    if (!p.area_id && userLoc.areaId) p.area_id = userLoc.areaId
+
     return p as SearchParams
-  }, [searchParams])
+  }, [searchParams, userLoc.stateId, userLoc.cityId, userLoc.areaId])
 
   const { data: listings, isLoading } = useSearchListings(filters)
+
+  // Location display label
+  const locationLabel = userLoc.areaName || userLoc.cityName || userLoc.stateName || 'All Cities'
 
   // Cascading location states
   const stateId = (filters.state_id as string) || ''
@@ -102,25 +133,23 @@ export default function SearchPage() {
         <meta name="description" content="Search and filter the best PGs, Hostels, and Coliving spaces matching your preferences." />
       </Helmet>
 
-      {/* ── Top Cascading Dropdowns Search Bar ── */}
-      <div className="bg-white border-b border-slate-200 py-4 sticky top-16 z-30 shadow-sm">
-        <div className="page-container">
-          <div className="max-w-4xl bg-slate-50 border border-slate-200/60 p-4 rounded-2xl">
-            <div className="flex items-center gap-2 mb-2 text-slate-500 font-semibold text-xs uppercase tracking-wider">
-              <MapPin className="w-3.5 h-3.5 text-blue-500" />
-              Select Stay Location
-            </div>
-            
-            <LocationSelectorGroup
-              stateId={stateId}
-              cityId={cityId}
-              areaId={areaId}
-              onStateChange={(id) => handleLocationChange('state_id', id)}
-              onCityChange={(id) => handleLocationChange('city_id', id)}
-              onAreaChange={(id) => handleLocationChange('area_id', id)}
-              horizontal={true}
-              onlyWithListings={filters.available_only === 'true' || filters.available_only === true}
-            />
+      {/* ── Top Location Selector Pill ── */}
+      <div className="bg-white border-b border-slate-200 py-3.5 sticky top-16 z-30 shadow-xs">
+        <div className="page-container flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 font-extrabold text-xs sm:text-sm hover:bg-blue-100 transition-all shadow-xs"
+            >
+              <MapPin size={16} className="text-blue-600 shrink-0 animate-bounce" />
+              <span>📍 {locationLabel}</span>
+              <span className="text-xs text-blue-600 font-semibold underline ml-1">Change Location</span>
+            </button>
+            {userLoc.stateName && (
+              <span className="text-xs font-semibold text-slate-400 hidden sm:inline">
+                in {userLoc.stateName}
+              </span>
+            )}
           </div>
 
           {/* Active filter chips */}
