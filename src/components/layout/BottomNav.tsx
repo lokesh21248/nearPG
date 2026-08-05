@@ -8,7 +8,7 @@ export function BottomNav() {
 
   const tabs = [
     { name: 'Home',    path: '/',        icon: Home },
-    { name: 'Explore', path: '/search',  icon: Search },
+    { name: 'Search',  path: '/search',  icon: Search },
     { name: 'Map',     path: '/map',     icon: MapPin },
     { name: 'Saved',   path: '/wishlist', icon: Heart },
     { name: 'Profile', path: isAuthenticated ? '/profile' : '/login', icon: UserCircle2 },

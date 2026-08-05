@@ -61,7 +61,7 @@ export function NearbyPGsSection() {
               Geolocation Discovery
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
-              PGs Near You
+              🔥 Popular Near You
             </h2>
             <p className="text-xs sm:text-base text-slate-500 font-medium mt-1">
               {location.cityName ? (

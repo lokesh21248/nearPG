@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Users, ChevronDown, Sparkles, TrendingUp, Shield } from 'lucide-react'
+import { Search, Users, ChevronDown, Sparkles, TrendingUp, Shield, Navigation, Crosshair, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 import LocationSelectorGroup from '../ui/LocationSelectorGroup'
+import { useUserLocation } from '../../contexts/LocationContext'
 
 const STATS = [
-  { value: 'Verified', label: 'PG Listings',    icon: '🏠' },
+  { value: '2500+',    label: 'Verified PGs',   icon: '⭐' },
   { value: 'Direct',   label: 'Owner Contact',  icon: '📞' },
   { value: 'Zero',     label: 'Brokerage Fee',  icon: '💰' },
   { value: 'Instant',  label: 'Visit Booking',  icon: '⚡' },
@@ -16,6 +17,7 @@ const item      = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, tra
 
 export function HeroSearch() {
   const navigate = useNavigate()
+  const { detectCurrentLocation, isDetecting, location } = useUserLocation()
   const [stateId, setStateId] = useState('')
   const [cityId, setCityId]   = useState('')
   const [areaId, setAreaId]   = useState('')
@@ -58,30 +60,59 @@ export function HeroSearch() {
           style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
       </div>
 
-      <div className="page-container relative z-10 pt-10 pb-12 sm:pt-24 sm:pb-20 flex flex-col items-center justify-center text-center">
+      <div className="page-container relative z-10 pt-10 pb-12 sm:pt-20 sm:pb-20 flex flex-col items-center justify-center text-center">
         
         <motion.div variants={container} initial="hidden" animate="show" className="w-full max-w-4xl mx-auto">
 
-          {/* Trust badge */}
-          <motion.div variants={item} className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-blue-400/30 bg-white/10 backdrop-blur-sm text-blue-200 text-[11px] sm:text-xs font-semibold mb-4 sm:mb-8">
-            <Sparkles size={12} className="text-blue-300" />
-            India's #1 PG Discovery Platform
-            <TrendingUp size={12} className="text-emerald-400" />
+          {/* Badges bar */}
+          <motion.div variants={item} className="flex items-center justify-center gap-2 flex-wrap mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full border border-blue-400/30 bg-white/10 backdrop-blur-sm text-blue-200 text-[11px] sm:text-xs font-semibold">
+              <Sparkles size={12} className="text-blue-300" />
+              India's #1 PG Discovery Platform
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 backdrop-blur-sm text-amber-200 text-[11px] sm:text-xs font-bold">
+              <Star size={12} className="fill-amber-400 text-amber-400" />
+              2500+ Verified PGs
+            </div>
           </motion.div>
 
           {/* Hero Headline */}
-          <motion.h1 variants={item} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] sm:leading-[1.05] tracking-tight mb-3 sm:mb-6"
+          <motion.h1 variants={item} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] sm:leading-[1.05] tracking-tight mb-4 sm:mb-6"
             style={{ fontFamily: 'Outfit,sans-serif' }}>
-            Find Your Perfect
-            <span className="block" style={{ background: 'linear-gradient(135deg,#93C5FD,#C4B5FD)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              Home Away
-            </span>
-            from Home
+            🏠 Find Your Perfect PG
           </motion.h1>
 
-          <motion.p variants={item} className="text-sm sm:text-xl text-blue-100/90 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed font-medium px-2">
+          <motion.p variants={item} className="text-sm sm:text-lg text-blue-100/90 max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed font-medium px-2">
             Discover verified PGs, Hostels &amp; Coliving spaces with real reviews, zero brokerage, and direct owner contact.
           </motion.p>
+
+          {/* Detect Location Button */}
+          <motion.div variants={item} className="mb-6 sm:mb-8">
+            <button
+              type="button"
+              onClick={() => detectCurrentLocation()}
+              disabled={isDetecting}
+              className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-sm sm:text-base shadow-xl hover:shadow-2xl transition-all active:scale-95 border border-emerald-400/30"
+              style={{ boxShadow: '0 10px 30px rgba(16,185,129,0.35)' }}
+            >
+              {isDetecting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Detecting Location...</span>
+                </>
+              ) : (
+                <>
+                  <Crosshair size={18} className="animate-pulse" />
+                  <span>🎯 Detect My Location</span>
+                </>
+              )}
+            </button>
+            {location.cityName && (
+              <p className="text-xs text-emerald-300 font-semibold mt-2">
+                📍 Currently showing near: <strong className="text-white">{location.cityName}</strong>
+              </p>
+            )}
+          </motion.div>
 
           {/* ── Search Box ── */}
           <motion.div variants={item} className="relative text-left w-full">
@@ -106,13 +137,13 @@ export function HeroSearch() {
                   <div className="w-full sm:w-60 flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/50 transition-all">
                     <Users size={16} className="text-slate-400 shrink-0" />
                     <div className="flex-1 relative">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Looking For</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-1">Gender</p>
                       <select
                         value={gender}
                         onChange={e => setGender(e.target.value)}
                         className="w-full bg-transparent border-none outline-none text-xs sm:text-sm font-semibold text-slate-900 appearance-none cursor-pointer pr-6"
                       >
-                        <option value="">Any Gender</option>
+                        <option value="">Gender ▼</option>
                         <option value="Men">Men Only</option>
                         <option value="Women">Women Only</option>
                         <option value="Coliving">Coliving</option>
@@ -129,7 +160,7 @@ export function HeroSearch() {
                         onChange={(e) => setOnlyWithListings(e.target.checked)}
                         className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                       />
-                      Show available PGs only
+                      Available Only
                     </label>
                   </div>
 
@@ -146,7 +177,7 @@ export function HeroSearch() {
                       style={{ background: 'linear-gradient(135deg,#2563EB,#1D4ED8)', boxShadow: '0 8px 24px rgba(37,99,235,0.40)' }}
                     >
                       <Search size={18} strokeWidth={2.5} />
-                      Search PGs
+                      🔵 Search PG
                     </button>
                   </div>
                 </div>
@@ -155,7 +186,7 @@ export function HeroSearch() {
           </motion.div>
 
           {/* ── Stats bar ── */}
-          <motion.div variants={item} className="mt-8 sm:mt-16">
+          <motion.div variants={item} className="mt-8 sm:mt-12">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 max-w-2xl mx-auto">
               {STATS.map(s => (
                 <div key={s.label} className="flex flex-col items-center gap-0.5 sm:gap-1 px-3 py-3 sm:px-4 sm:py-4 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15">
@@ -165,20 +196,6 @@ export function HeroSearch() {
                 </div>
               ))}
             </div>
-          </motion.div>
-
-          {/* Trust strip */}
-          <motion.div variants={item} className="mt-6 sm:mt-8 flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
-            {[
-              { icon: Shield, text: '100% Verified Listings' },
-              { icon: Shield, text: 'Zero Brokerage' },
-              { icon: Shield, text: 'Free Visit Booking' },
-            ].map(({ icon: Icon, text }) => (
-              <div key={text} className="flex items-center gap-1.5 text-blue-200/70 text-[11px] sm:text-xs font-medium">
-                <Icon size={13} className="text-emerald-400 shrink-0" />
-                {text}
-              </div>
-            ))}
           </motion.div>
 
         </motion.div>
@@ -193,3 +210,4 @@ export function HeroSearch() {
     </div>
   )
 }
+

@@ -111,10 +111,16 @@ export function PGCard({ pg }: { pg: PGLite }) {
 
       {/* ── Content ── */}
       <div className="p-3.5 sm:p-5 flex flex-col flex-1">
-        {/* Name */}
-        <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-blue-600 transition-colors mb-1">
-          {pg.name}
-        </h3>
+        {/* Header with Name & Rating */}
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-blue-600 transition-colors">
+            {pg.name}
+          </h3>
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/60 text-amber-800 text-[11px] font-extrabold shrink-0">
+            <Star size={11} className="fill-amber-400 text-amber-400" />
+            <span>4.8</span>
+          </div>
+        </div>
 
         {/* Location */}
         <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium mb-2 sm:mb-3">

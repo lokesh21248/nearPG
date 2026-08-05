@@ -120,6 +120,33 @@ export default function HomePage() {
       {/* Geolocation Nearby PGs */}
       <NearbyPGsSection />
 
+      {/* ── Interactive Map Section Banner ── */}
+      <section className="py-8 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#60A5FA_1px,transparent_1px)] [background-size:16px_16px]" />
+        <div className="page-container relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 text-center sm:text-left">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl shrink-0 shadow-lg">
+              🗺️
+            </div>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-black tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                Explore PGs on Interactive Map
+              </h3>
+              <p className="text-xs sm:text-sm text-blue-200/90 mt-1">
+                Visualise PG locations, radius distance, landmark routes, and nearby amenities interactively.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/map"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl transition-all active:scale-95 shrink-0 border border-blue-400/30"
+          >
+            <span>Open Map View</span>
+            <ChevronRight size={18} />
+          </Link>
+        </div>
+      </section>
+
       {/* Popular Cities */}
       <PopularCities />
 
