@@ -134,16 +134,16 @@ export default function SearchPage() {
       </Helmet>
 
       {/* ── Top Location Selector Pill ── */}
-      <div className="bg-white border-b border-slate-200 py-3.5 sticky top-16 z-30 shadow-xs">
-        <div className="page-container flex items-center justify-between gap-4">
+      <div className="bg-white border-b border-slate-200 py-2.5 sm:py-3.5 sticky top-[108px] md:top-16 z-30 shadow-xs">
+        <div className="page-container flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 font-extrabold text-xs sm:text-sm hover:bg-blue-100 transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 font-extrabold text-xs sm:text-sm hover:bg-blue-100 transition-all shadow-xs"
             >
-              <MapPin size={16} className="text-blue-600 shrink-0 animate-bounce" />
-              <span>📍 {locationLabel}</span>
-              <span className="text-xs text-blue-600 font-semibold underline ml-1">Change Location</span>
+              <MapPin size={14} className="text-blue-600 shrink-0" />
+              <span className="truncate max-w-[180px] sm:max-w-none">📍 {locationLabel}</span>
+              <span className="text-[11px] sm:text-xs text-blue-600 font-semibold underline ml-0.5 shrink-0">Change</span>
             </button>
             {userLoc.stateName && (
               <span className="text-xs font-semibold text-slate-400 hidden sm:inline">
@@ -154,12 +154,12 @@ export default function SearchPage() {
 
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
-            <div className="flex items-center gap-2 mt-4 flex-wrap">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
               {activeFilterChips.map(chip => (
                 <button
                   key={chip.key}
                   onClick={() => handleFilterChange({ ...filters, [chip.key]: undefined })}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[11px] sm:text-xs font-semibold hover:bg-blue-100 transition-colors shrink-0"
                 >
                   {chip.label}
                   <X size={11} />
@@ -167,7 +167,7 @@ export default function SearchPage() {
               ))}
               <button
                 onClick={handleClearAll}
-                className="text-xs font-bold text-rose-500 hover:text-rose-700 px-2 py-1 transition-colors"
+                className="text-[11px] sm:text-xs font-bold text-rose-500 hover:text-rose-700 px-2 py-1 transition-colors shrink-0"
               >
                 Clear all
               </button>

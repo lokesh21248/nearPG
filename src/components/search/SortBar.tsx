@@ -16,26 +16,28 @@ export function SortBar({ total, sort, onChange }: SortBarProps) {
   const currentLabel = SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Newest First'
 
   return (
-    <div className="flex items-center justify-between mb-6 gap-4">
-      <div className="flex items-center gap-2">
-        <p className="text-slate-900 font-bold text-lg">{total}</p>
-        <p className="text-slate-500 text-sm font-medium">
-          {total === 1 ? 'property found' : 'properties found'}
+    <div className="flex items-center justify-between mb-5 gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <span className="px-2.5 py-0.5 rounded-full bg-blue-100/70 text-blue-700 text-xs font-black">
+          {total}
+        </span>
+        <p className="text-slate-600 text-xs sm:text-sm font-extrabold">
+          {total === 1 ? 'PG Available' : 'PGs Available'}
         </p>
       </div>
-      <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-xs hover:border-slate-300 transition-colors">
-        <SlidersHorizontal size={14} className="text-slate-400" />
+      <div className="flex items-center gap-2 bg-white border border-slate-200/80 hover:border-blue-300 rounded-2xl px-3 py-1.5 sm:py-2 shadow-xs transition-all">
+        <SlidersHorizontal size={13} className="text-blue-600 shrink-0" />
         <select
           value={sort}
           onChange={e => onChange(e.target.value)}
-          className="text-sm font-semibold text-slate-700 bg-transparent border-none outline-none cursor-pointer appearance-none pr-5"
+          className="text-xs sm:text-sm font-bold text-slate-800 bg-transparent border-none outline-none cursor-pointer appearance-none pr-5"
           aria-label="Sort results"
         >
           {SORT_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown size={13} className="text-slate-400 pointer-events-none -ml-4" />
+        <ChevronDown size={13} className="text-slate-400 pointer-events-none -ml-4 shrink-0" />
       </div>
     </div>
   )

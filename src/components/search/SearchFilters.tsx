@@ -82,10 +82,14 @@ export function SearchFilters({ filters, onChange }: Props) {
     update(key, cur.includes(val) ? cur.filter(v => v !== val) : [...cur, val])
   }
 
-  const activeCount = Object.keys(filters).filter(k =>
-    filters[k as keyof SearchParams] !== undefined &&
-    (Array.isArray(filters[k as keyof SearchParams]) ? (filters[k as keyof SearchParams] as string[]).length > 0 : true)
-  ).length
+  const EXCLUDED_KEYS = new Set(['state_id', 'city_id', 'area_id', 'sort', 'available_only'])
+  const activeCount = Object.keys(filters).filter(k => {
+    if (EXCLUDED_KEYS.has(k)) return false
+    const val = filters[k as keyof SearchParams]
+    if (val === undefined || val === null || val === '') return false
+    if (Array.isArray(val)) return val.length > 0
+    return true
+  }).length + (filters.available_only === 'true' ? 1 : 0)
 
   const FilterContent = (
     <div className="space-y-0">
@@ -197,12 +201,12 @@ export function SearchFilters({ filters, onChange }: Props) {
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={() => setIsOpen(true)}
-        className="lg:hidden w-full mb-4 flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 rounded-2xl font-semibold text-slate-700 shadow-sm hover:border-blue-300 hover:text-blue-700 transition-all"
+        className="lg:hidden w-full mb-4 flex items-center justify-center gap-2.5 px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all"
       >
-        <Filter size={16} />
-        Filters
+        <Filter size={16} className="text-white" />
+        <span>Filter &amp; Refine</span>
         {activeCount > 0 && (
-          <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
+          <span className="w-5 h-5 rounded-full bg-white text-blue-700 text-xs font-black flex items-center justify-center shadow-xs">
             {activeCount}
           </span>
         )}

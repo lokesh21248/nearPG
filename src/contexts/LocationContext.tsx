@@ -146,6 +146,10 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           const lat = position.coords.latitude
           const lng = position.coords.longitude
 
+          console.log("Current Position", position)
+          console.log("Latitude", lat)
+          console.log("Longitude", lng)
+
           // Reverse geocode
           const geoData = await reverseGeocode(lat, lng)
 
@@ -156,12 +160,16 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           let cityName = geoData.city || ''
           let areaName = geoData.area || ''
 
-          // Match in Supabase
-          if (stateName) {
+          // Normalize names for DB matching (remove words like 'District', 'State', 'City')
+          const cleanState = stateName.replace(/\s*(State|Union Territory)\s*/gi, '').trim()
+          const cleanCity = cityName.replace(/\s*(City|District|Corporation)\s*/gi, '').trim()
+
+          // Match State in Supabase
+          if (cleanState) {
             const { data: matchedState } = await supabase
               .from('states')
               .select('id, name')
-              .ilike('name', `%${stateName}%`)
+              .ilike('name', `%${cleanState}%`)
               .limit(1)
               .maybeSingle()
 
@@ -169,12 +177,12 @@ export function LocationProvider({ children }: { children: ReactNode }) {
               stateId = matchedState.id
               stateName = matchedState.name
 
-              if (cityName) {
+              if (cleanCity) {
                 const { data: matchedCity } = await supabase
                   .from('cities')
                   .select('id, name')
                   .eq('state_id', stateId)
-                  .ilike('name', `%${cityName}%`)
+                  .ilike('name', `%${cleanCity}%`)
                   .limit(1)
                   .maybeSingle()
 

@@ -62,29 +62,29 @@ export function Header() {
 
           {/* ── Logo + Location Selector ── */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link to="/" className="flex items-center gap-2 shrink-0 group">
+                      <Link to="/" className="flex items-center gap-2 shrink-0 group">
               <div
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md transition-transform group-hover:scale-105"
                 style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', boxShadow: '0 4px 12px rgba(37,99,235,0.35)' }}
               >
                 N
               </div>
-              <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
+              <span className="hidden min-[360px]:block text-lg sm:text-2xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
                 NearPG
               </span>
             </Link>
 
-            {/* Location selector pill */}
+            {/* Premium Location selector pill */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-slate-100/80 hover:bg-blue-50 border border-slate-200/80 hover:border-blue-200 text-slate-800 hover:text-blue-700 transition-all font-bold text-xs sm:text-sm"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-violet-50/90 hover:from-blue-100 hover:to-indigo-100 border border-blue-200/70 hover:border-blue-300 text-slate-900 transition-all font-extrabold text-xs shadow-xs hover:shadow-md shrink-0 active:scale-95 group"
               title="Select Location"
             >
-              <MapPin size={13} className="text-blue-600 shrink-0" />
-              <span className="max-w-[100px] sm:max-w-[150px] truncate font-extrabold">
-                {userLoc.areaName ? `📍 ${userLoc.areaName}` : userLoc.cityName ? `📍 ${userLoc.cityName}` : userLoc.stateName ? `📍 ${userLoc.stateName}` : '📍 Select Location'}
+              <MapPin size={13} className="text-blue-600 shrink-0 group-hover:scale-110 transition-transform" />
+              <span className="max-w-[70px] min-[380px]:max-w-[105px] sm:max-w-[150px] truncate font-extrabold text-[11px] sm:text-xs">
+                {userLoc.areaName || userLoc.cityName || userLoc.stateName || 'Location'}
               </span>
-              <ChevronDown size={13} className="text-slate-400 shrink-0" />
+              <ChevronDown size={12} className="text-blue-500/80 shrink-0 group-hover:translate-y-0.5 transition-transform" />
             </button>
           </div>
 
@@ -193,17 +193,17 @@ export function Header() {
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <Link to="/login" className="hidden sm:block text-sm font-semibold text-slate-700 hover:text-blue-600 px-3 py-2 rounded-xl hover:bg-blue-50 transition-colors">
                   Log in
                 </Link>
                 <Link
                   to="/signup"
                   id="header-signup-btn"
-                  className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2"
+                  className="btn-primary text-xs sm:text-sm px-2.5 sm:px-4 py-2"
                 >
                   <UserCircle2 size={15} className="shrink-0" />
-                  Sign up
+                  <span className="hidden min-[360px]:inline">Sign up</span>
                 </Link>
               </div>
             )}

@@ -61,7 +61,7 @@ function App() {
           </LocationProvider>
         </AuthProvider>
         </BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} position="bottom" />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </QueryClientProvider>
     </HelmetProvider>
   )

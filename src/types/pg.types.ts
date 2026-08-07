@@ -12,6 +12,12 @@ export interface PGLite {
   status: PGStatus
   featured: boolean
   verified: boolean
+  latitude?: number | null
+  longitude?: number | null
+  state_id?: string
+  city_id?: string
+  area_id?: string
+  distanceKm?: number
   pg_images: { image_url: string }[]
   pg_rooms: { price: number }[]
   created_at: string

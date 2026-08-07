@@ -21,25 +21,31 @@ export const listingsService = {
   async getFeatured(): Promise<PGLite[]> {
     const { data, error } = await supabase
       .from('pg_listings')
-      .select('id, name, gender, city, area, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price)')
+      .select('id, name, gender, city, area, state_id, city_id, area_id, latitude, longitude, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price)')
       .eq('featured', true)
       .eq('status', 'Available')
       .order('created_at', { ascending: false })
       .limit(6)
     
-    if (error) throw new Error(error.message)
+    if (error) {
+      console.error('Supabase Error (getFeatured):', error)
+      throw new Error(error.message)
+    }
     return data as PGLite[]
   },
 
   async getRecent(): Promise<PGLite[]> {
     const { data, error } = await supabase
       .from('pg_listings')
-      .select('id, name, gender, city, area, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price)')
+      .select('id, name, gender, city, area, state_id, city_id, area_id, latitude, longitude, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price)')
       .eq('status', 'Available')
       .order('created_at', { ascending: false })
       .limit(6)
     
-    if (error) throw new Error(error.message)
+    if (error) {
+      console.error('Supabase Error (getRecent):', error)
+      throw new Error(error.message)
+    }
     return data as PGLite[]
   },
 
@@ -50,14 +56,17 @@ export const listingsService = {
       .eq('id', id)
       .single()
       
-    if (error) throw new Error(error.message)
+    if (error) {
+      console.error('Supabase Error (getById):', error)
+      throw new Error(error.message)
+    }
     return data as PGDetail
   },
 
   async search(params: SearchParams): Promise<PGLite[]> {
     let query = supabase
       .from('pg_listings')
-      .select('id, name, gender, city, area, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price), pg_amenities(amenity_name)')
+      .select('id, name, gender, city, area, state_id, city_id, area_id, latitude, longitude, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price), pg_amenities(amenity_name)')
 
     // Base filters
     if (params.state_id) query = query.eq('state_id', params.state_id)
@@ -81,7 +90,21 @@ export const listingsService = {
 
     const { data, error } = await query
 
-    if (error) throw new Error(error.message)
+    if (error) {
+      console.error('[listingsService.search] Supabase error:', error)
+      throw new Error(error.message)
+    }
+
+    console.log(`[listingsService.search] Fetched ${data?.length ?? 0} rows from Supabase`, { params, sample: data?.[0] })
+    
+    if (!data || data.length === 0) {
+      console.warn(
+        '[listingsService.search] ⚠️ 0 rows returned.\n' +
+        'LIKELY CAUSE: Missing Supabase RLS SELECT policy on pg_listings.\n' +
+        'FIX: Run supabase-rls-fix.sql in Supabase SQL Editor:\n' +
+        'https://supabase.com/dashboard/project/qgyrxqxhroulnrrxpibe/sql/new'
+      )
+    }
     
     let results = data as any[]
 

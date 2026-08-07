@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MapPin, Heart, Star, CheckCircle2, Wifi, Wind, Car, Utensils, Users, Dumbbell } from 'lucide-react'
+import { MapPin, Heart, Star, CheckCircle2, Wifi, Wind, Car, Utensils, Users, Dumbbell, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { PGLite } from '../../types/pg.types'
 import { Badge } from '../ui/Badge'
@@ -18,8 +18,8 @@ const AMENITY_ICONS: Record<string, React.ComponentType<{ size?: number; classNa
 function AmenityChip({ name }: { name: string }) {
   const Icon = Object.entries(AMENITY_ICONS).find(([k]) => name.toLowerCase().includes(k.toLowerCase()))?.[1]
   return (
-    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium">
-      {Icon ? <Icon size={11} /> : null}
+    <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100/80 border border-slate-200/50 text-slate-600 text-[11px] font-semibold">
+      {Icon ? <Icon size={11} className="text-slate-500" /> : null}
       <span>{name}</span>
     </div>
   )
@@ -46,29 +46,29 @@ export function PGCard({ pg }: { pg: PGLite }) {
   }
 
   return (
-    <Link to={`/pg/${pg.id}`} className="pg-card group flex flex-col h-full">
+    <Link to={`/pg/${pg.id}`} className="pg-card group flex flex-col h-full rounded-2xl bg-white border border-slate-200/80 hover:border-blue-300 hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* ── Image ── */}
-      <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
+      <div className="relative overflow-hidden aspect-[16/10] sm:aspect-[4/3]">
         {/* Skeleton */}
         <div className="absolute inset-0 bg-slate-200" />
         <img
           src={thumbnail}
           alt={pg.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
         {/* Gradient bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
         {/* Badges top-left */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {pg.featured && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-amber-950 shadow-sm">
-              <Star size={10} className="fill-amber-900" /> Featured
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 shadow-md">
+              <Star size={10} className="fill-amber-950" /> Featured
             </span>
           )}
           {pg.verified && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white shadow-sm">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md">
               <CheckCircle2 size={10} strokeWidth={3} /> Verified
             </span>
           )}
@@ -79,22 +79,26 @@ export function PGCard({ pg }: { pg: PGLite }) {
           onClick={handleWishlist}
           disabled={isPending}
           whileTap={{ scale: 0.85 }}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/25 hover:bg-white backdrop-blur-md flex items-center justify-center transition-all shadow-sm z-10"
+          className={`absolute top-2.5 right-2.5 w-8 h-8 sm:w-9 sm:h-9 rounded-full backdrop-blur-md flex items-center justify-center transition-all shadow-md z-10 ${
+            isWished
+              ? 'bg-rose-500/90 text-white shadow-rose-500/30'
+              : 'bg-white/40 hover:bg-white text-white hover:text-slate-800'
+          }`}
           aria-label={isWished ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <Heart
-            size={17}
-            className={`transition-colors ${isWished ? 'fill-rose-500 text-rose-500' : 'text-white'}`}
-            strokeWidth={isWished ? 0 : 2}
+            size={16}
+            className={`transition-colors ${isWished ? 'fill-white text-white' : 'text-white group-hover:text-slate-700'}`}
+            strokeWidth={isWished ? 0 : 2.2}
           />
         </motion.button>
 
         {/* Gender badge bottom-left */}
-        <div className="absolute bottom-3 left-3">
-          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm ${
-            pg.gender === 'Men'    ? 'bg-blue-500/90 text-white' :
-            pg.gender === 'Women' ? 'bg-rose-500/90 text-white' :
-                                    'bg-slate-700/90 text-white'
+        <div className="absolute bottom-2.5 left-2.5 z-10">
+          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold shadow-sm backdrop-blur-sm ${
+            pg.gender === 'Men'    ? 'bg-blue-600/90 text-white' :
+            pg.gender === 'Women' ? 'bg-rose-600/90 text-white' :
+                                    'bg-purple-600/90 text-white'
           }`}>
             <Users size={10} />
             For {pg.gender}
@@ -103,54 +107,55 @@ export function PGCard({ pg }: { pg: PGLite }) {
 
         {/* Image count badge */}
         {(pg.pg_images?.length ?? 0) > 1 && (
-          <div className="absolute bottom-3 right-3 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-semibold">
+          <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold z-10">
             📷 {pg.pg_images?.length}
           </div>
         )}
       </div>
 
       {/* ── Content ── */}
-      <div className="p-3.5 sm:p-5 flex flex-col flex-1">
+      <div className="p-3.5 sm:p-4 flex flex-col flex-1">
         {/* Header with Name & Rating */}
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-blue-600 transition-colors">
             {pg.name}
           </h3>
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/60 text-amber-800 text-[11px] font-extrabold shrink-0">
-            <Star size={11} className="fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-700 text-[11px] font-extrabold shrink-0">
+            <Star size={11} className="fill-amber-500 text-amber-500" />
             <span>4.8</span>
           </div>
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium mb-2 sm:mb-3">
-          <MapPin size={12} className="text-slate-400 shrink-0" />
+        <div className="flex items-center gap-1 text-slate-500 text-xs font-medium mb-2.5">
+          <MapPin size={12} className="text-blue-600 shrink-0" />
           <span className="line-clamp-1">{pg.area}, {pg.city}</span>
         </div>
 
         {/* Amenity chips */}
         {amenities.length > 0 && (
-          <div className="flex items-center gap-1 flex-wrap mb-3 sm:mb-4">
+          <div className="flex items-center gap-1 flex-wrap mb-3">
             {amenities.map(a => <AmenityChip key={a} name={a} />)}
           </div>
         )}
 
-        {/* Price & CTA */}
-        <div className="mt-auto pt-3 sm:pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+        {/* Price & Premium CTA Button */}
+        <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Starts from</p>
             {startPrice ? (
               <div className="flex items-baseline gap-0.5">
-                <span className="text-base sm:text-xl font-black text-slate-900">₹{startPrice.toLocaleString('en-IN')}</span>
-                <span className="text-[11px] sm:text-xs text-slate-400 font-medium">/mo</span>
+                <span className="text-base sm:text-lg font-black text-slate-900">₹{startPrice.toLocaleString('en-IN')}</span>
+                <span className="text-[11px] text-slate-400 font-semibold">/mo</span>
               </div>
             ) : (
-              <span className="text-xs sm:text-sm font-bold text-slate-700">On Request</span>
+              <span className="text-xs font-bold text-slate-700">On Request</span>
             )}
           </div>
-          <div className="flex-shrink-0">
-            <div className="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all">
-              View Details
+          <div className="shrink-0">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 shadow-md group-hover:shadow-blue-500/25 transition-all">
+              <span>View Details</span>
+              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
         </div>
