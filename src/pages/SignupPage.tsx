@@ -76,8 +76,8 @@ export default function SignupPage() {
       startCountdown()
       showToast('OTP sent to +91 ' + phone.trim(), 'success')
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? ''
-      setError(getFirebaseErrorMessage(code))
+      console.error('[SignupPage] sendOTP error:', err)
+      setError(getFirebaseErrorMessage(err))
     } finally {
       setIsSending(false)
     }
@@ -101,8 +101,8 @@ export default function SignupPage() {
       showToast('Account created! Welcome to NearPG 🎉', 'success')
       setTimeout(() => navigate('/'), 1500)
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? ''
-      setError(getFirebaseErrorMessage(code))
+      console.error('[SignupPage] verifyOTP error:', err)
+      setError(getFirebaseErrorMessage(err))
       setOtp('')
     } finally {
       setIsVerifying(false)
@@ -121,8 +121,8 @@ export default function SignupPage() {
       startCountdown()
       showToast('OTP resent!', 'success')
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? ''
-      setError(getFirebaseErrorMessage(code))
+      console.error('[SignupPage] resendOTP error:', err)
+      setError(getFirebaseErrorMessage(err))
     } finally {
       setIsSending(false)
     }

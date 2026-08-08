@@ -1,4 +1,4 @@
-import { auth } from '../lib/firebase'
+import { auth, isFirebaseConfigured } from '../lib/firebase'
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
@@ -10,22 +10,44 @@ import type { UserProfile } from '../types/auth.types'
 
 // ─── Error message map ───────────────────────────────────────────────────────
 
-export function getFirebaseErrorMessage(code: string): string {
+export function getFirebaseErrorMessage(error: unknown): string {
+  if (!isFirebaseConfigured) {
+    return 'Firebase configuration missing or using placeholder values. Please set valid VITE_FIREBASE_* keys.'
+  }
+
+  const errObj = (error || {}) as { code?: string; message?: string }
+  let code = errObj.code ?? ''
+  const message = errObj.message ?? String(error ?? '')
+
+  // Extract code from message if code property is empty
+  if (!code && message) {
+    const match = message.match(/auth\/[a-z0-9-]+/i)
+    if (match) code = match[0]
+  }
+
   const messages: Record<string, string> = {
     'auth/invalid-phone-number': 'Please enter a valid 10-digit phone number.',
     'auth/too-many-requests': 'Too many attempts. Please wait a few minutes and try again.',
-    'auth/invalid-verification-code': 'Invalid OTP. Please check and try again.',
-    'auth/code-expired': 'OTP has expired. Please request a new one.',
-    'auth/network-request-failed': 'Network error. Please check your connection.',
-    'auth/captcha-check-failed': 'Security check failed. Please refresh the page and try again.',
+    'auth/invalid-verification-code': 'Invalid OTP. Please check the code and try again.',
+    'auth/code-expired': 'OTP code has expired. Please request a new one.',
+    'auth/network-request-failed': 'Network error. Please check your internet connection.',
+    'auth/captcha-check-failed': 'reCAPTCHA security check failed. Please refresh the page and try again.',
     'auth/missing-phone-number': 'Phone number is required.',
-    'auth/quota-exceeded': 'SMS quota exceeded. Please try again later.',
+    'auth/quota-exceeded': 'SMS quota exceeded for this project. Please try again later.',
     'auth/user-disabled': 'This account has been disabled.',
-    'auth/operation-not-allowed': 'Phone sign-in is not enabled. Contact support.',
-    'auth/missing-verification-code': 'Please enter the OTP.',
+    'auth/operation-not-allowed': 'Phone sign-in is not enabled in Firebase Console (Authentication -> Sign-in method).',
+    'auth/missing-verification-code': 'Please enter the 6-digit OTP.',
     'auth/session-expired': 'Your session has expired. Please request a new OTP.',
+    'auth/api-key-not-valid': 'Invalid Firebase API Key. Please check VITE_FIREBASE_API_KEY in Vercel.',
+    'auth/invalid-api-key': 'Invalid Firebase API Key. Please check VITE_FIREBASE_API_KEY in Vercel.',
+    'auth/unauthorized-domain': 'Domain not authorized in Firebase Console (Authentication -> Settings -> Authorized domains).',
   }
-  return messages[code] ?? 'Something went wrong. Please try again.'
+
+  if (messages[code]) return messages[code]
+  if (message.includes('reCAPTCHA')) return 'reCAPTCHA initialization failed. Please refresh the page.'
+  if (message.includes('API key')) return 'Firebase API key is invalid or restricted.'
+
+  return message || 'Authentication failed. Please try again.'
 }
 
 // ─── reCAPTCHA ───────────────────────────────────────────────────────────────
@@ -36,6 +58,10 @@ let recaptchaVerifier: RecaptchaVerifier | null = null
  * Creates (or re-creates) an invisible RecaptchaVerifier bound to the given container element id.
  */
 export function setupRecaptcha(containerId: string): RecaptchaVerifier {
+  if (!isFirebaseConfigured) {
+    throw new Error('Firebase configuration missing. Set VITE_FIREBASE_* environment variables.')
+  }
+
   // Clear stale verifier
   if (recaptchaVerifier) {
     try {
@@ -46,11 +72,16 @@ export function setupRecaptcha(containerId: string): RecaptchaVerifier {
     recaptchaVerifier = null
   }
 
+  const container = document.getElementById(containerId)
+  if (!container) {
+    throw new Error(`reCAPTCHA container element #${containerId} not found in DOM.`)
+  }
+
   recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
     size: 'invisible',
     callback: () => {},
     'expired-callback': () => {
-      recaptchaVerifier = null
+      clearRecaptcha()
     },
   })
 
@@ -80,6 +111,7 @@ export async function sendOTP(
   const verifier = setupRecaptcha(containerId)
   return signInWithPhoneNumber(auth, phoneE164, verifier)
 }
+
 
 /**
  * Verifies the OTP with the confirmation result returned by sendOTP.

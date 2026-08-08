@@ -81,8 +81,8 @@ export default function LoginPage() {
       startCountdown()
       showToast('OTP sent to +91 ' + trimmedPhone, 'success')
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? ''
-      setError(getFirebaseErrorMessage(code))
+      console.error('[LoginPage] sendOTP error:', err)
+      setError(getFirebaseErrorMessage(err))
     } finally {
       setIsSending(false)
     }
@@ -98,14 +98,22 @@ export default function LoginPage() {
     setIsVerifying(true)
 
     try {
-      await verifyOTP(confirmationResult, otp)
+      const credential = await verifyOTP(confirmationResult, otp)
+      const firebaseUser = credential.user
+
+      // Check or create profile in Supabase
+      await profileService.upsertProfile(
+        firebaseUser.uid,
+        firebaseUser.displayName ?? 'NearPG User',
+        phone.trim()
+      )
+
       await refreshProfile()
-      showToast('Welcome back! 🎉', 'success')
+      showToast('Logged in successfully!', 'success')
       navigate(from, { replace: true })
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? ''
-      setError(getFirebaseErrorMessage(code))
-      setOtp('')
+      console.error('[LoginPage] verifyOTP error:', err)
+      setError(getFirebaseErrorMessage(err))
     } finally {
       setIsVerifying(false)
     }
