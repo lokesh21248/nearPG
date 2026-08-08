@@ -43,9 +43,14 @@ export function getFirebaseErrorMessage(error: unknown): string {
     'auth/unauthorized-domain': 'Domain not authorized in Firebase Console (Authentication -> Settings -> Authorized domains).',
   }
 
+  if (message.includes('Hostname match not found')) {
+    return 'Domain not authorized in Firebase! Please add nearpg-psi.vercel.app to Firebase Console -> Authentication -> Settings -> Authorized domains.'
+  }
+
   if (messages[code]) return messages[code]
-  if (message.includes('reCAPTCHA')) return 'reCAPTCHA initialization failed. Please refresh the page.'
+  if (message.includes('reCAPTCHA')) return 'reCAPTCHA security check failed. Ensure your domain is added to Firebase Authorized Domains.'
   if (message.includes('API key')) return 'Firebase API key is invalid or restricted.'
+
 
   return message || 'Authentication failed. Please try again.'
 }
