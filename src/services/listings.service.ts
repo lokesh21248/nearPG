@@ -66,7 +66,7 @@ export const listingsService = {
   async search(params: SearchParams): Promise<PGLite[]> {
     let query = supabase
       .from('pg_listings')
-      .select('id, name, gender, city, area, state_id, city_id, area_id, latitude, longitude, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price), pg_amenities(amenity_name)')
+      .select('id, name, gender, city, area, state_id, city_id, area_id, latitude, longitude, status, featured, verified, created_at, pg_images(image_url), pg_rooms(price, sharing_type, ac_type), pg_amenities(amenity_name)')
 
     // Base filters
     if (params.state_id) query = query.eq('state_id', params.state_id)
@@ -108,32 +108,42 @@ export const listingsService = {
     
     let results = data as any[]
 
-    // In-memory filters for nested relationships (Supabase RPC would be better for pure SQL, but this works for scale MVP)
+    // In-memory filters for nested relationships
     if (params.min_price || params.max_price || (params.sharing && params.sharing.length > 0) || params.ac) {
       results = results.filter(pg => {
         const rooms = pg.pg_rooms || []
         if (rooms.length === 0) return false
 
-        // Check if ANY room satisfies the room filters
+        // Check if ANY room satisfies all room-level filters
         return rooms.some((room: any) => {
           let match = true
-          if (params.min_price && room.price < Number(params.min_price)) match = false
-          if (params.max_price && room.price > Number(params.max_price)) match = false
-          if (params.ac && room.ac_type !== params.ac) match = false
+          const roomPrice = Number(room.price) || 0
+          if (params.min_price && roomPrice < Number(params.min_price)) match = false
+          if (params.max_price && Number(params.max_price) > 0 && roomPrice > Number(params.max_price)) match = false
+          if (params.ac) {
+            const roomAc = (room.ac_type || '').toLowerCase()
+            const filterAc = (params.ac || '').toLowerCase()
+            if (roomAc !== filterAc) match = false
+          }
           if (params.sharing && params.sharing.length > 0) {
-            // "2 Sharing", "Single Sharing" etc.
-            if (!params.sharing.includes(room.sharing_type)) match = false
+            const roomSharing = (room.sharing_type || '').toLowerCase().trim()
+            const sharingMatch = params.sharing.some(
+              s => s.toLowerCase().trim() === roomSharing
+            )
+            if (!sharingMatch) match = false
           }
           return match
         })
       })
     }
 
-    // Amenities filter (must have ALL requested amenities)
+    // Amenities filter — case-insensitive, must have ALL requested amenities
     if (params.amenities && params.amenities.length > 0) {
       results = results.filter(pg => {
-        const ams = (pg.pg_amenities || []).map((a: any) => a.amenity_name)
-        return params.amenities!.every(a => ams.includes(a))
+        const ams = (pg.pg_amenities || []).map((a: any) =>
+          (a.amenity_name || '').toLowerCase().trim()
+        )
+        return params.amenities!.every(a => ams.includes(a.toLowerCase().trim()))
       })
     }
 

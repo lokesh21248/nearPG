@@ -19,7 +19,7 @@ export interface PGLite {
   area_id?: string
   distanceKm?: number
   pg_images: { image_url: string }[]
-  pg_rooms: { price: number }[]
+  pg_rooms: { price: number; sharing_type: string; ac_type: string }[]
   created_at: string
   pg_amenities?: { amenity_name: string }[]
 }
