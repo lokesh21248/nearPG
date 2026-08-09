@@ -3,14 +3,15 @@ import { MapPin } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { usePopularCities } from '../../hooks/useLocations'
 
-const CITIES = [
-  { name: 'Bangalore', image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&q=80&w=800', properties: '5,000+', color: 'from-orange-500 to-pink-600' },
-  { name: 'Pune',      image: 'https://images.unsplash.com/photo-1629828551400-c9771146740f?auto=format&fit=crop&q=80&w=800', properties: '3,200+', color: 'from-blue-500 to-cyan-600'   },
-  { name: 'Delhi',     image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=800', properties: '4,100+', color: 'from-violet-500 to-purple-700'},
-  { name: 'Mumbai',    image: 'https://images.unsplash.com/photo-1522441815192-d9f04eb0615c?auto=format&fit=crop&q=80&w=800', properties: '2,800+', color: 'from-emerald-500 to-teal-600'},
-  { name: 'Hyderabad', image: 'https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&q=80&w=800', properties: '3,500+', color: 'from-amber-500 to-orange-600'},
-  { name: 'Chennai',   image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f7415e?auto=format&fit=crop&q=80&w=800', properties: '2,100+', color: 'from-rose-500 to-red-600'    },
+const COLORS = [
+  'from-orange-500 to-pink-600',
+  'from-blue-500 to-cyan-600',
+  'from-violet-500 to-purple-700',
+  'from-emerald-500 to-teal-600',
+  'from-amber-500 to-orange-600',
+  'from-rose-500 to-red-600'
 ]
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } }
@@ -19,6 +20,10 @@ const item      = { hidden: { opacity: 0, scale: 0.94 }, show: { opacity: 1, sca
 export function PopularCities() {
   const ref  = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
+  const { data: popularCities = [], isLoading } = usePopularCities()
+
+  if (isLoading) return <div className="text-center py-8 text-slate-500 text-sm">Loading popular cities...</div>
+  if (!popularCities.length) return null
 
   return (
     <section className="py-8 sm:py-16 bg-white">
@@ -38,7 +43,7 @@ export function PopularCities() {
           animate={inView ? 'show' : 'hidden'}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
         >
-          {CITIES.map(city => (
+          {popularCities.map((city, idx) => (
             <motion.div key={city.name} variants={item}>
               <Link
                 to={`/search?city=${city.name}`}
@@ -46,23 +51,25 @@ export function PopularCities() {
                 style={{ aspectRatio: '4/5' }}
               >
                 {/* Skeleton placeholder */}
-                <div className="absolute inset-0 bg-slate-200" />
-                <img
-                  src={city.image}
-                  alt={city.name}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
-                />
+                <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-4xl">{city.icon}</div>
+                {city.imageUrl && (
+                  <img
+                    src={city.imageUrl}
+                    alt={city.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 {/* Hover overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${city.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${COLORS[idx % COLORS.length]} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
 
                 <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4">
                   <h3 className="text-sm sm:text-lg font-black text-white leading-tight group-hover:text-blue-200 transition-colors" style={{ fontFamily: 'Outfit,sans-serif' }}>
                     {city.name}
                   </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5 font-medium">Explore PGs</p>
+                  <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5 font-medium">{city.pgCount}+ Properties</p>
                 </div>
               </Link>
             </motion.div>

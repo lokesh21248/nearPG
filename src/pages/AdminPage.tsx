@@ -180,10 +180,7 @@ export default function AdminPage() {
         .split('\n')
         .map(u => u.trim())
         .filter(u => u.startsWith('http'))
-      const finalImageUrls = parsedUrls.length > 0 ? parsedUrls : [
-        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800',
-        'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&q=80&w=800'
-      ]
+      const finalImageUrls = parsedUrls.length > 0 ? parsedUrls : []
       const imagesPayload = finalImageUrls.map((url, idx) => ({
         pg_id: newPgId,
         image_url: url,
@@ -676,10 +673,10 @@ export default function AdminPage() {
               <textarea
                 value={imageUrls}
                 onChange={e => setImageUrls(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://example.com/image.jpg"
                 className="input-base h-24 font-mono text-xs py-2 resize-none"
               />
-              <p className="text-[11px] text-slate-400 mt-1">Leave as default or enter public image URLs separated by lines.</p>
+              <p className="text-[11px] text-slate-400 mt-1">Enter public image URLs separated by lines.</p>
             </div>
           </div>
 

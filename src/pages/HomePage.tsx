@@ -8,6 +8,7 @@ import { HeroSearch } from '../components/home/HeroSearch'
 import { NearbyPGsSection } from '../components/home/NearbyPGsSection'
 import { PopularCities } from '../components/home/PopularCities'
 import { PGListingSection } from '../components/home/PGListingSection'
+import { GlobalReviewsSection } from '../components/home/GlobalReviewsSection'
 import { useFeaturedListings, useRecentListings } from '../hooks/useListings'
 import {
   Shield, MessageCircle, CalendarCheck, Star, ChevronRight, CheckCircle2,
@@ -35,25 +36,6 @@ const HOW_STEPS = [
     step: '04', icon: '🎉', title: 'Move In',
     desc: 'Finalize your stay directly with the owner. Zero brokerage, transparent pricing.',
     color: 'from-orange-500 to-orange-700',
-  },
-]
-
-/* ── Testimonials ── */
-const REVIEWS = [
-  {
-    name: 'Priya Sharma',    city: 'Bangalore', initials: 'PS', rating: 5,
-    text: 'Found an amazing PG in Koramangala within 2 days! The photos matched exactly and the owner was super helpful. Zero brokerage saved me ₹15,000.',
-    bg: 'from-blue-400 to-blue-600',
-  },
-  {
-    name: 'Rahul Verma',     city: 'Pune',      initials: 'RV', rating: 5,
-    text: 'NearPG made my relocation so smooth. The filter system is excellent — I found exactly what I needed in my budget in under an hour.',
-    bg: 'from-violet-400 to-violet-600',
-  },
-  {
-    name: 'Ananya Reddy',    city: 'Hyderabad', initials: 'AR', rating: 5,
-    text: 'As a woman relocating alone, safety was my priority. NearPG\'s verified listings and detailed amenity information gave me confidence.',
-    bg: 'from-emerald-400 to-emerald-600',
   },
 ]
 
@@ -242,41 +224,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="section-pad bg-white">
-        <div className="page-container">
-          <FadeSection className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wider mb-4">
-              <Star size={12} className="fill-amber-500 text-amber-500" />
-              Happy Tenants
-            </div>
-            <h2 className="section-title">What Our Tenants Say</h2>
-            <p className="section-subtitle">Discover verified PGs, Hostels &amp; Coliving spaces across India</p>
-          </FadeSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {REVIEWS.map(r => (
-              <FadeSection key={r.name}>
-                <motion.div whileHover={{ y: -4 }} className="card p-6 h-full">
-                  <div className="flex items-center gap-1 mb-4">
-                    {Array.from({ length: r.rating }).map((_, i) => (
-                      <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-slate-700 text-sm leading-relaxed mb-6">"{r.text}"</p>
-                  <div className="flex items-center gap-3 mt-auto">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${r.bg} flex items-center justify-center text-white text-sm font-bold`}>
-                      {r.initials}
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900 text-sm">{r.name}</p>
-                      <p className="text-slate-400 text-xs">{r.city}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
+      <GlobalReviewsSection />
 
       {/* ── App Download Banner ── */}
       <section className="section-pad" style={{ background: 'linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 100%)', borderTop: '1px solid #D1FAE5', borderBottom: '1px solid #D1FAE5' }}>

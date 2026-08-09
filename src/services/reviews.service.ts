@@ -42,5 +42,17 @@ export const reviewsService = {
       .eq('id', id)
       
     if (error) throw new Error(error.message)
+  },
+
+  async getGlobalReviews(): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('pg_reviews')
+      .select('*, pg_listings(name, city)')
+      .gte('rating', 4)
+      .order('created_at', { ascending: false })
+      .limit(6)
+      
+    if (error) throw new Error(error.message)
+    return data || []
   }
 }

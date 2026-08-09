@@ -29,3 +29,12 @@ export function useAreas(cityId: string, onlyWithListings = true) {
     gcTime: 5 * 60 * 1000,
   })
 }
+
+export function usePopularCities() {
+  return useQuery({
+    queryKey: ['location', 'popularCities'],
+    queryFn: () => locationService.getPopularCities(),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  })
+}

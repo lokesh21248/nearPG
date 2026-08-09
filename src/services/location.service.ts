@@ -34,6 +34,7 @@ export interface PopularCity {
   slug?: string
   pgCount: number
   icon?: string
+  imageUrl?: string
 }
 
 export interface StateWithCities extends State {
@@ -146,20 +147,21 @@ export const locationService = {
    */
   async getPopularCities(): Promise<PopularCity[]> {
     try {
-      // 1. Fetch cities with states
+      // 1. Fetch cities with states and image_url
       const { data: cities, error: citiesErr } = await supabase
         .from('cities')
-        .select('id, state_id, name, states(name)')
+        .select('id, state_id, name, image_url, states(name)')
         .order('name', { ascending: true })
 
       if (citiesErr || !cities) {
-        return this.getFallbackPopularCities()
+        throw new Error(citiesErr?.message || 'Failed to load cities')
       }
 
       // 2. Fetch PG counts per city from pg_listings
       const { data: listings } = await supabase
         .from('pg_listings')
         .select('city_id')
+        .eq('status', 'Available')
 
       const countMap: Record<string, number> = {}
       listings?.forEach(l => {
@@ -185,8 +187,9 @@ export const locationService = {
           stateId: c.state_id,
           stateName: c.states?.name || '',
           slug: slugify(c.name),
-          pgCount: rawCount > 0 ? rawCount : Math.floor(Math.random() * 200) + 50,
+          pgCount: rawCount,
           icon: cityIcons[lowerName] || '🏙️',
+          imageUrl: c.image_url
         }
       })
 
@@ -194,19 +197,8 @@ export const locationService = {
       return results.sort((a, b) => b.pgCount - a.pgCount)
     } catch (e) {
       console.warn('Error fetching popular cities:', e)
-      return this.getFallbackPopularCities()
+      return []
     }
-  },
-
-  getFallbackPopularCities(): PopularCity[] {
-    return [
-      { id: 'hyd', name: 'Hyderabad', stateName: 'Telangana', slug: 'hyderabad', pgCount: 1450, icon: '🕌' },
-      { id: 'blr', name: 'Bangalore', stateName: 'Karnataka', slug: 'bangalore', pgCount: 2200, icon: '🌳' },
-      { id: 'maa', name: 'Chennai', stateName: 'Tamil Nadu', slug: 'chennai', pgCount: 980, icon: '🌊' },
-      { id: 'pnq', name: 'Pune', stateName: 'Maharashtra', slug: 'pune', pgCount: 1120, icon: '⛰️' },
-      { id: 'bom', name: 'Mumbai', stateName: 'Maharashtra', slug: 'mumbai', pgCount: 1850, icon: '🌊' },
-      { id: 'del', name: 'Delhi', stateName: 'Delhi', slug: 'delhi', pgCount: 1600, icon: '🏛️' },
-    ]
   },
 
   /**

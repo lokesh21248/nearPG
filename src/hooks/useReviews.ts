@@ -44,3 +44,11 @@ export function useDeleteReview() {
     },
   })
 }
+
+export function useGlobalReviews() {
+  return useQuery({
+    queryKey: ['reviews', 'global'],
+    queryFn: () => reviewsService.getGlobalReviews(),
+    staleTime: 5 * 60 * 1000,
+  })
+}

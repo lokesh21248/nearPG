@@ -6,6 +6,7 @@ import { Badge } from '../ui/Badge'
 import { useWishlistIds, useToggleWishlist } from '../../hooks/useWishlist'
 import { useFirebaseAuth } from '../../hooks/useFirebaseAuth'
 import { useToast } from '../ui/Toast'
+import { NoImageFallback } from '../ui/NoImageFallback'
 
 const AMENITY_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   WiFi:    Wifi,
@@ -32,8 +33,7 @@ export function PGCard({ pg }: { pg: PGLite }) {
   const { mutate: toggleWishlist, isPending } = useToggleWishlist()
 
   const isWished    = wishlistIds.includes(pg.id)
-  const thumbnail   = pg.pg_images?.[0]?.image_url ||
-    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800'
+  const thumbnail   = pg.pg_images?.[0]?.image_url
   const prices      = (pg.pg_rooms || []).map(r => Number(r.price)).filter(Boolean)
   const startPrice  = prices.length > 0 ? Math.min(...prices) : null
   const amenities   = (pg.pg_amenities || []).slice(0, 3).map(a => a.amenity_name)
@@ -51,12 +51,16 @@ export function PGCard({ pg }: { pg: PGLite }) {
       <div className="relative overflow-hidden aspect-[16/10] sm:aspect-[4/3]">
         {/* Skeleton */}
         <div className="absolute inset-0 bg-slate-200" />
-        <img
-          src={thumbnail}
-          alt={pg.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
+        {thumbnail ? (
+          <img
+            src={thumbnail}
+            alt={pg.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <NoImageFallback className="absolute inset-0 w-full h-full" iconSize={32} />
+        )}
         {/* Gradient bottom */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 

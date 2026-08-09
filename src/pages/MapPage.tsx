@@ -8,6 +8,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { useUserLocation } from '../contexts/LocationContext'
 import { useSearchListings } from '../hooks/useListings'
 import { calculateDistance, formatDistance } from '../lib/geo'
+import { NoImageFallback } from '../components/ui/NoImageFallback'
 
 export default function MapPage() {
   const { location, setIsModalOpen, detectCurrentLocation } = useUserLocation()
@@ -220,11 +221,15 @@ export default function MapPage() {
               <div className="flex gap-4">
                 {/* Thumbnail */}
                 <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 bg-slate-100 relative">
-                  <img
-                    src={selectedPg.pg_images?.[0]?.image_url || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800'}
-                    alt={selectedPg.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {selectedPg.pg_images?.[0]?.image_url ? (
+                    <img
+                      src={selectedPg.pg_images[0].image_url}
+                      alt={selectedPg.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <NoImageFallback className="absolute inset-0 w-full h-full" iconSize={24} />
+                  )}
                   {selectedPg.verified && (
                     <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-bold flex items-center gap-0.5 shadow-sm">
                       <ShieldCheck size={10} />
