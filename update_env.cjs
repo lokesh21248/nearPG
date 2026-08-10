@@ -8,7 +8,7 @@ const envs = {
 };
 
 async function updateEnv(key, value) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     console.log(`Updating ${key}...`);
     const child = spawn('npx.cmd', ['vercel', 'env', 'add', key, 'production', '--value', value, '--force', '--yes'], { shell: true });
     let done = false;

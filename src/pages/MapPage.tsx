@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import { MapPin, Compass, ArrowLeft } from 'lucide-react'
+import { MapPin, Compass, ArrowLeft, LocateFixed } from 'lucide-react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { PageWrapper } from '../components/layout/PageWrapper'
@@ -78,6 +78,21 @@ export default function MapPage() {
     }
   }, [centerLat, centerLng])
 
+  // ResizeObserver to invalidate map size automatically when container resizes
+  useEffect(() => {
+    if (!mapContainerRef.current || !mapRef.current) return
+    
+    const resizeObserver = new ResizeObserver(() => {
+      mapRef.current?.invalidateSize()
+    })
+    
+    resizeObserver.observe(mapContainerRef.current)
+    
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
   // Update map view & markers
   useEffect(() => {
     const map = mapRef.current
@@ -115,17 +130,11 @@ export default function MapPage() {
       const isSelected = pg.id === selectedPgId
       const priceText = `₹${pg.price.toLocaleString('en-IN')}`
 
-      const badgeBg = isSelected 
-        ? 'bg-slate-900 border-slate-700 scale-110'
-        : pg.verified
-        ? 'bg-emerald-600 border-emerald-400'
-        : pg.featured
-        ? 'bg-blue-600 border-blue-400'
-        : 'bg-slate-800 border-slate-600'
-
       const markerHtml = `
-        <div class="transition-all transform ${isSelected ? 'z-[1000]' : 'hover:scale-105'}">
-          <div class="px-2.5 py-1 rounded-full text-white font-black text-xs shadow-lg border ${badgeBg} flex items-center gap-1 transition-all">
+        <div class="transition-all transform ${isSelected ? 'z-[1000] scale-110' : 'hover:scale-105'}">
+          <div class="px-2.5 py-1 rounded-full text-white font-black text-xs shadow-lg border flex items-center gap-1 transition-all ${
+            isSelected ? 'bg-blue-600 border-white shadow-blue-500/50' : 'bg-slate-900 border-slate-700'
+          }">
             <span>${priceText}</span>
           </div>
         </div>
@@ -186,8 +195,11 @@ export default function MapPage() {
         <meta name="description" content="Discover PGs and hostels near you on an interactive live map with real prices and instant directions." />
       </Helmet>
 
-      {/* Main Container - use flex-1 to fill available space gracefully, without fixed viewport hacks */}
-      <div className="flex-1 w-full relative flex flex-col bg-slate-100 overflow-hidden">
+      {/* Main Container - Explicitly size for mobile to prevent layout collapse */}
+      <div 
+        className="w-full relative flex flex-col bg-slate-100 overflow-hidden sm:flex-1"
+        style={{ height: 'calc(100dvh - 128px)' }}
+      >
         
         {/* Top Control Bar */}
         <div className="absolute top-4 left-4 right-4 z-[400] flex items-center justify-between gap-3 pointer-events-none pt-[env(safe-area-inset-top)]">
@@ -209,15 +221,17 @@ export default function MapPage() {
             </button>
           </div>
 
-          <div className="pointer-events-auto">
-            <button
-              onClick={handleRecenter}
-              className="min-h-[44px] min-w-[44px] rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-blue-600 shadow-lg flex items-center justify-center hover:bg-blue-50 transition-transform active:scale-95"
-              title="Re-center to your location"
-            >
-              <Compass size={22} />
-            </button>
-          </div>
+        </div>
+
+        {/* Locate Me FAB (Bottom Right) */}
+        <div className="absolute bottom-6 sm:bottom-8 right-4 z-[400] pointer-events-auto">
+          <button
+            onClick={handleRecenter}
+            className="w-[44px] h-[44px] sm:w-[50px] sm:h-[50px] rounded-2xl bg-white shadow-xl shadow-blue-900/10 border border-slate-100 text-blue-600 flex items-center justify-center hover:bg-slate-50 transition-transform active:scale-95"
+            title="Locate Me"
+          >
+            <LocateFixed size={20} className="sm:w-6 sm:h-6" />
+          </button>
         </div>
 
         {/* Map Container - fills available flex space */}

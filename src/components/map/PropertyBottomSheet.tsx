@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Navigation, ExternalLink, ShieldCheck, X } from 'lucide-react'
+import { Navigation, ExternalLink, ShieldCheck, X, MapPin } from 'lucide-react'
 import { NoImageFallback } from '../ui/NoImageFallback'
 import { formatDistance } from '../../lib/geo'
 
@@ -37,7 +37,7 @@ export function PropertyBottomSheet({ pg, onClose, onGetDirections }: PropertyBo
                 onClose()
               }
             }}
-            className="fixed sm:absolute bottom-0 sm:bottom-4 left-0 right-0 sm:left-4 sm:right-auto sm:w-[400px] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200/80 z-40 pointer-events-auto"
+            className="fixed sm:absolute bottom-16 sm:bottom-4 left-0 right-0 sm:left-4 sm:right-auto sm:w-[400px] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200/80 z-40 pointer-events-auto"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             {/* Drag Handle (Mobile only) */}
@@ -82,11 +82,12 @@ export function PropertyBottomSheet({ pg, onClose, onGetDirections }: PropertyBo
                     </h4>
                     <span className="text-blue-600 font-black text-base mt-1 block">
                       ₹{pg.price?.toLocaleString('en-IN') || 6500}
-                      <span className="text-[10px] text-slate-400 font-medium ml-1">/mo</span>
+                      <span className="text-[11px] text-slate-500 font-medium ml-1">/ month</span>
                     </span>
 
-                    <p className="text-xs text-slate-500 truncate mt-1">
-                      📍 {pg.area}, {pg.city}
+                    <p className="text-xs text-slate-500 truncate mt-1 flex items-center gap-1">
+                      <MapPin size={12} className="text-slate-400" />
+                      {pg.area}, {pg.city}
                     </p>
 
                     {pg.distanceKm && pg.distanceKm !== Infinity && (
@@ -114,7 +115,7 @@ export function PropertyBottomSheet({ pg, onClose, onGetDirections }: PropertyBo
                   to={`/pg/${pg.id}`}
                   className="flex-1 min-h-[44px] py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-1.5 transition-colors shadow-md shadow-blue-600/20"
                 >
-                  View Details
+                  View PG →
                 </Link>
               </div>
             </div>

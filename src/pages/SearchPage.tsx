@@ -64,25 +64,7 @@ export default function SearchPage() {
   const cityId = (filters.city_id as string) || ''
   const areaId = (filters.area_id as string) || ''
 
-  const handleLocationChange = (key: 'state_id' | 'city_id' | 'area_id', id: string) => {
-    setSearchParams(prev => {
-      if (id) {
-        prev.set(key, id)
-      } else {
-        prev.delete(key)
-      }
 
-      // Clear child values when parent changes
-      if (key === 'state_id') {
-        prev.delete('city_id')
-        prev.delete('area_id')
-      } else if (key === 'city_id') {
-        prev.delete('area_id')
-      }
-
-      return prev
-    })
-  }
 
   const handleFilterChange = (newFilters: SearchParams) => {
     const params = new URLSearchParams()

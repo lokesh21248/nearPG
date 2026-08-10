@@ -9,7 +9,7 @@ import { PGListingSection } from '../components/home/PGListingSection'
 import { GlobalReviewsSection } from '../components/home/GlobalReviewsSection'
 import { useFeaturedListings, useRecentListings } from '../hooks/useListings'
 import {
-  Shield, MessageCircle, CalendarCheck, ChevronRight, CheckCircle2, MapIcon,
+  Shield, MessageCircle, CalendarCheck, ChevronRight, CheckCircle2,
   Search, Building2, Calendar, Map
 } from 'lucide-react'
 

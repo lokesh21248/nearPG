@@ -8,8 +8,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { useToast } from '../components/ui/Toast'
 import { supabase } from '../lib/supabase'
 import LocationSelectorGroup from '../components/ui/LocationSelectorGroup'
-import { Save, PlusCircle, LayoutDashboard, MapPin, Loader2, Check, ArrowLeft, Sparkles } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Save, Loader2, Check, ArrowLeft, Sparkles } from 'lucide-react'
 
 const ALL_AMENITIES = [
   'WiFi', 'AC', 'Parking', 'Food Included', 'Laundry', 'Housekeeping',

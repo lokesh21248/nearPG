@@ -64,7 +64,7 @@ export function slugify(text: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '')
-    .replace(/-\-+/g, '-')
+    .replace(/-+/g, '-')
 }
 
 export const locationService = {
@@ -170,7 +170,7 @@ export const locationService = {
 
 
       const results: PopularCity[] = cities.map((c: any) => {
-        const lowerName = c.name.toLowerCase()
+
         const rawCount = countMap[c.id] || 0
         return {
           id: c.id,
