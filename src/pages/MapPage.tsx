@@ -76,7 +76,7 @@ export default function MapPage() {
         mapRef.current = null
       }
     }
-  }, [])
+  }, [centerLat, centerLng])
 
   // Update map view & markers
   useEffect(() => {
@@ -94,8 +94,8 @@ export default function MapPage() {
         html: `
           <div class="relative flex items-center justify-center">
             <div class="absolute w-8 h-8 rounded-full bg-blue-500/30 animate-ping"></div>
-            <div class="w-7 h-7 rounded-full bg-blue-600 border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-black">
-              📍
+            <div class="w-7 h-7 rounded-full bg-blue-600 border-2 border-white shadow-lg flex items-center justify-center text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
           </div>
         `,

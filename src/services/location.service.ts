@@ -33,7 +33,7 @@ export interface PopularCity {
   stateId?: string
   slug?: string
   pgCount: number
-  icon?: string
+
   imageUrl?: string
 }
 
@@ -168,15 +168,6 @@ export const locationService = {
         if (l.city_id) countMap[l.city_id] = (countMap[l.city_id] || 0) + 1
       })
 
-      const cityIcons: Record<string, string> = {
-        hyderabad: '🕌',
-        bangalore: '🌳',
-        chennai: '🌊',
-        pune: '⛰️',
-        mumbai: '🌊',
-        delhi: '🏛️',
-        kolkata: '🌉',
-      }
 
       const results: PopularCity[] = cities.map((c: any) => {
         const lowerName = c.name.toLowerCase()
@@ -188,7 +179,7 @@ export const locationService = {
           stateName: c.states?.name || '',
           slug: slugify(c.name),
           pgCount: rawCount,
-          icon: cityIcons[lowerName] || '🏙️',
+
           imageUrl: c.image_url
         }
       })

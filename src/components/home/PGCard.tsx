@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, Heart, Star, CheckCircle2, Wifi, Wind, Car, Utensils, Users, Dumbbell, ArrowRight } from 'lucide-react'
+import { MapPin, Heart, Star, CheckCircle2, Wifi, Wind, Car, Utensils, Users, Dumbbell, ArrowRight, Image } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { PGLite } from '../../types/pg.types'
 import { useWishlistIds, useToggleWishlist } from '../../hooks/useWishlist'
@@ -86,7 +86,7 @@ export function PGCard({ pg }: { pg: PGLite }) {
           onClick={handleWishlist}
           disabled={isPending}
           whileTap={{ scale: 0.85 }}
-          className={`absolute top-2.5 right-2.5 w-8 h-8 sm:w-9 sm:h-9 rounded-full backdrop-blur-md flex items-center justify-center transition-all shadow-md z-10 ${
+          className={`absolute top-2.5 right-2.5 w-11 h-11 rounded-full backdrop-blur-md flex items-center justify-center transition-all shadow-md z-10 ${
             isWished
               ? 'bg-rose-500/90 text-white shadow-rose-500/30'
               : 'bg-white/40 hover:bg-white text-white hover:text-slate-800'
@@ -114,8 +114,8 @@ export function PGCard({ pg }: { pg: PGLite }) {
 
         {/* Image count badge */}
         {(pg.pg_images?.length ?? 0) > 1 && (
-          <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold z-10">
-            📷 {pg.pg_images?.length}
+          <div className="absolute bottom-2.5 right-2.5 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold z-10 flex items-center gap-1">
+            <Image size={12} strokeWidth={2.5} /> {pg.pg_images?.length}
           </div>
         )}
       </div>
@@ -162,9 +162,9 @@ export function PGCard({ pg }: { pg: PGLite }) {
             )}
           </div>
           <div className="shrink-0">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 shadow-md group-hover:shadow-blue-500/25 transition-all">
-              <span>View Details</span>
-              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+            <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:to-indigo-700 shadow-md group-hover:shadow-blue-500/25 transition-all min-h-[44px]">
+              <span>View PG</span>
+              <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
         </div>

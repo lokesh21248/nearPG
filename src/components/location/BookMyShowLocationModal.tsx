@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Search, MapPin, Crosshair, X, ChevronRight, ChevronDown,
+  Search, MapPin, Crosshair, X, ChevronRight, ChevronDown, Map,
   Building2, Sparkles, Clock, Trash2, AlertCircle, Check
 } from 'lucide-react'
 import { useUserLocation, RecentSearchItem } from '../../contexts/LocationContext'
@@ -399,7 +399,7 @@ export function BookMyShowLocationModal() {
                             }`}
                           >
                             <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-xl shrink-0">
-                              {city.icon || '🏙️'}
+                              <Building2 size={24} className="text-slate-400" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="font-bold text-slate-900 text-sm truncate leading-tight">{city.name}</p>
@@ -436,7 +436,7 @@ export function BookMyShowLocationModal() {
                             className="w-full flex items-center justify-between p-4 text-left font-bold text-sm text-slate-800 hover:bg-slate-50 transition-colors"
                           >
                             <span className="flex items-center gap-2">
-                              <span>🗺️</span>
+                              <Map size={16} className="text-slate-400" />
                               <span>{state.name}</span>
                               <span className="text-xs text-slate-400 font-normal">({state.cities?.length || 0} Cities)</span>
                             </span>

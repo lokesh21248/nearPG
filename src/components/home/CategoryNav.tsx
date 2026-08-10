@@ -1,15 +1,15 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Users, Star, Zap, Wind, MapPin } from 'lucide-react'
+import { Building2, Users, Home, Star, Snowflake, Sparkles, IndianRupee } from 'lucide-react'
 
 const CATEGORIES = [
-  { id: 'all',       label: 'All Stays',    icon: '🏠', params: {} },
-  { id: 'men',       label: 'Men',          icon: '👨', params: { gender: 'Men' } },
-  { id: 'women',     label: 'Women',        icon: '👩', params: { gender: 'Women' } },
-  { id: 'coliving',  label: 'Coliving',     icon: '🤝', params: { gender: 'Coliving' } },
-  { id: 'featured',  label: 'Top Picks',    icon: '⭐', params: { featured: 'true' } },
-  { id: 'ac',        label: 'AC Rooms',     icon: '❄️', params: { ac: 'AC' } },
-  { id: 'new',       label: 'Newly Added',  icon: '✨', params: { sort: 'newest' } },
-  { id: 'budget',    label: 'Under ₹8,000', icon: '💰', params: { max_price: '8000' } },
+  { id: 'all',       label: 'All Stays',    icon: Building2, params: {} },
+  { id: 'men',       label: 'Men',          icon: Users,     params: { gender: 'Men' } },
+  { id: 'women',     label: 'Women',        icon: Users,     params: { gender: 'Women' } },
+  { id: 'coliving',  label: 'Coliving',     icon: Home,      params: { gender: 'Coliving' } },
+  { id: 'featured',  label: 'Top Picks',    icon: Star,      params: { featured: 'true' } },
+  { id: 'ac',        label: 'AC Rooms',     icon: Snowflake, params: { ac: 'AC' } },
+  { id: 'new',       label: 'Newly Added',  icon: Sparkles,  params: { sort: 'newest' } },
+  { id: 'budget',    label: 'Under ₹8,000', icon: IndianRupee, params: { max_price: '8000' } },
 ]
 
 export function CategoryNav() {
@@ -57,7 +57,9 @@ export function CategoryNav() {
                     : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700 hover:bg-blue-50'
                 }`}
               >
-                <span className="text-sm leading-none">{cat.icon}</span>
+                <span className="text-sm leading-none flex items-center justify-center shrink-0">
+                  <cat.icon size={16} strokeWidth={2.5} />
+                </span>
                 <span>{cat.label}</span>
               </button>
             )

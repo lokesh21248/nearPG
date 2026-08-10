@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
+import { MapPin, Building2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
@@ -50,8 +50,9 @@ export function PopularCities() {
                 className="group block relative rounded-xl sm:rounded-2xl overflow-hidden img-zoom shadow-sm hover:shadow-xl transition-shadow duration-300"
                 style={{ aspectRatio: '4/5' }}
               >
-                {/* Skeleton placeholder */}
-                <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-4xl">{city.icon}</div>
+                <div className="absolute inset-0 bg-slate-200 flex items-center justify-center">
+                  <Building2 size={32} className="text-slate-400" />
+                </div>
                 {city.imageUrl && (
                   <img
                     src={city.imageUrl}

@@ -8,7 +8,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { useToast } from '../components/ui/Toast'
 import { supabase } from '../lib/supabase'
 import LocationSelectorGroup from '../components/ui/LocationSelectorGroup'
-import { Save, PlusCircle, ArrowLeft, Loader2, Sparkles } from 'lucide-react'
+import { Save, PlusCircle, LayoutDashboard, MapPin, Loader2, Check, ArrowLeft, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const ALL_AMENITIES = [
@@ -41,7 +41,7 @@ const pgSchema = z.object({
   bachelor_friendly: z.boolean().default(true),
 })
 
-type PGFormValues = z.infer<typeof pgSchema>
+
 
 export default function AdminPage() {
   const { showToast } = useToast()
@@ -82,7 +82,6 @@ export default function AdminPage() {
     register,
     handleSubmit,
     control,
-    setValue,
     watch,
     formState: { errors },
     reset,
@@ -111,9 +110,10 @@ export default function AdminPage() {
   })
 
   // Watch location state values
-  const stateId = watch('state_id')
-  const cityId = watch('city_id')
-  const areaId = watch('area_id')
+  // Watch location state values
+  const _stateId = watch('state_id')
+  const _cityId = watch('city_id')
+  const _areaId = watch('area_id')
 
   const onSubmit = async (values: any) => {
     setIsSubmitting(true)
@@ -189,7 +189,7 @@ export default function AdminPage() {
       const { error: imgErr } = await supabase.from('pg_images').insert(imagesPayload)
       if (imgErr) console.warn('Could not insert images:', imgErr.message)
 
-      showToast('PG Listing added successfully with amenities & rooms! 🎉', 'success')
+      showToast('PG Listing added successfully with amenities & rooms!', 'success')
       reset()
       setStateName('')
       setCityName('')
@@ -554,7 +554,7 @@ export default function AdminPage() {
                     <div className={`w-4 h-4 rounded flex items-center justify-center shrink-0 border ${
                       isChecked ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300'
                     }`}>
-                      {isChecked && <span className="text-[10px] font-black leading-none">✓</span>}
+                      {isChecked && <Check size={10} strokeWidth={4} />}
                     </div>
                     <span className="truncate">{amenity}</span>
                   </button>

@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { Phone, User, ArrowRight, Shield, RefreshCw, ChevronLeft, CheckCircle2 } from 'lucide-react'
+import { Phone, User, ArrowRight, Shield, RefreshCw, ChevronLeft, Check, CheckCircle2 } from 'lucide-react'
 import { type ConfirmationResult } from 'firebase/auth'
 import { sendOTP, verifyOTP, getFirebaseErrorMessage, clearRecaptcha } from '../services/auth.service'
 import { profileService } from '../services/auth.service'
@@ -98,7 +98,7 @@ export default function SignupPage() {
       await refreshProfile()
 
       setStep('success')
-      showToast('Account created! Welcome to NearPG 🎉', 'success')
+      showToast('Account created! Welcome to NearPG', 'success')
       setTimeout(() => navigate('/'), 1500)
     } catch (err: unknown) {
       console.error('[SignupPage] verifyOTP error:', err)
@@ -171,7 +171,7 @@ export default function SignupPage() {
                     (step === 'otp' && i === 0) || (step === 'success' && i < 2)
                       ? 'bg-emerald-500 text-white'
                       : 'bg-white/10 text-slate-400'}`}>
-                  {(step === 'otp' && i === 0) || (step === 'success' && i < 2) ? '✓' : i + 1}
+                  {(step === 'otp' && i === 0) || (step === 'success' && i < 2) ? <Check size={14} strokeWidth={3} /> : i + 1}
                 </div>
                 {i < 2 && <div className={`flex-1 h-0.5 rounded transition-all ${
                   (step === 'otp' && i === 0) || (step === 'success')
@@ -352,7 +352,7 @@ export default function SignupPage() {
                   style={{ background: 'rgba(16,185,129,0.15)', border: '2px solid rgba(16,185,129,0.4)' }}>
                   <CheckCircle2 size={40} className="text-emerald-400" />
                 </div>
-                <h1 className="text-2xl font-black text-white mb-2">You're in! 🎉</h1>
+                <h1 className="text-2xl font-black text-white mb-2">You're in!</h1>
                 <p className="text-slate-400 text-sm">Redirecting to home…</p>
               </div>
             )}

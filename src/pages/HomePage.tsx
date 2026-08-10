@@ -9,15 +9,16 @@ import { PGListingSection } from '../components/home/PGListingSection'
 import { GlobalReviewsSection } from '../components/home/GlobalReviewsSection'
 import { useFeaturedListings, useRecentListings } from '../hooks/useListings'
 import {
-  Shield, MessageCircle, CalendarCheck, ChevronRight, CheckCircle2, MapIcon
+  Shield, MessageCircle, CalendarCheck, ChevronRight, CheckCircle2, MapIcon,
+  Search, Building2, Calendar, Map
 } from 'lucide-react'
 
 /* ── How It Works — compact strip ── */
 const HOW_STEPS = [
-  { icon: '🔍', title: 'Search',  desc: 'Filter by city, area, budget and gender.' },
-  { icon: '🏠', title: 'Explore', desc: 'View photos, rooms, amenities and location.' },
-  { icon: '📅', title: 'Visit',   desc: 'Book a free visit at your convenience.' },
-  { icon: '🎉', title: 'Move In', desc: 'Finalise directly with the owner. Zero brokerage.' },
+  { icon: Search, title: 'Search',  desc: 'Filter by city, area, budget and gender.' },
+  { icon: Building2, title: 'Explore', desc: 'View photos, rooms, amenities and location.' },
+  { icon: Calendar, title: 'Visit',   desc: 'Book a free visit at your convenience.' },
+  { icon: CheckCircle2, title: 'Move In', desc: 'Finalise directly with the owner. Zero brokerage.' },
 ]
 
 /* ── Trust features — only honest, real claims ── */
@@ -66,7 +67,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl shrink-0 shadow-md">
-                🗺️
+                <Map size={24} className="text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-black text-slate-900" style={{ fontFamily: 'Outfit,sans-serif' }}>
@@ -116,7 +117,9 @@ export default function HomePage() {
                 {i < HOW_STEPS.length - 1 && (
                   <div className="hidden sm:block absolute right-0 top-5 text-slate-300 font-light text-xl">→</div>
                 )}
-                <div className="text-2xl shrink-0">{s.icon}</div>
+                <div className="shrink-0 p-3 bg-blue-50 text-blue-600 rounded-2xl">
+                  <s.icon size={24} />
+                </div>
                 <div>
                   <p className="text-sm font-extrabold text-slate-900">{s.title}</p>
                   <p className="text-xs text-slate-500 leading-snug mt-0.5 max-w-[120px] mx-auto">{s.desc}</p>

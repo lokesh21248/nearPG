@@ -45,12 +45,12 @@ export function BottomNav() {
                 }`}
               >
                 <Icon
-                  size={20}
-                  strokeWidth={isActive ? 2.5 : 1.8}
+                  size={22}
+                  strokeWidth={isActive ? 2.5 : 2}
                   className={`transition-colors ${isActive ? 'text-blue-600' : 'text-slate-400'}`}
                 />
               </motion.div>
-              <span className={`text-[10px] tracking-tight transition-colors ${
+              <span className={`text-[11px] tracking-tight transition-colors ${
                 isActive ? 'text-blue-600 font-bold' : 'text-slate-500 font-medium'
               }`}>
                 {tab.name}
