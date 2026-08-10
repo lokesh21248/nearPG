@@ -1,4 +1,4 @@
-import { BedDouble, Wind, CheckCircle2, Ruler, Snowflake } from 'lucide-react'
+import { BedDouble, CheckCircle2, Ruler, Snowflake } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { PGRoom } from '../../types/pg.types'
 

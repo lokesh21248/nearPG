@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Heart, Star, CheckCircle2, Wifi, Wind, Car, Utensils, Users, Dumbbell, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { PGLite } from '../../types/pg.types'
-import { Badge } from '../ui/Badge'
 import { useWishlistIds, useToggleWishlist } from '../../hooks/useWishlist'
 import { useFirebaseAuth } from '../../hooks/useFirebaseAuth'
 import { useToast } from '../ui/Toast'
@@ -31,12 +31,14 @@ export function PGCard({ pg }: { pg: PGLite }) {
   const { showToast }       = useToast()
   const { data: wishlistIds = [] } = useWishlistIds()
   const { mutate: toggleWishlist, isPending } = useToggleWishlist()
+  const [imgError, setImgError] = useState(false)
 
   const isWished    = wishlistIds.includes(pg.id)
   const thumbnail   = pg.pg_images?.[0]?.image_url
   const prices      = (pg.pg_rooms || []).map(r => Number(r.price)).filter(Boolean)
   const startPrice  = prices.length > 0 ? Math.min(...prices) : null
   const amenities   = (pg.pg_amenities || []).slice(0, 3).map(a => a.amenity_name)
+  const showImage   = thumbnail && !imgError
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -51,12 +53,13 @@ export function PGCard({ pg }: { pg: PGLite }) {
       <div className="relative overflow-hidden aspect-[16/10] sm:aspect-[4/3]">
         {/* Skeleton */}
         <div className="absolute inset-0 bg-slate-200" />
-        {thumbnail ? (
+        {showImage ? (
           <img
             src={thumbnail}
             alt={pg.name}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <NoImageFallback className="absolute inset-0 w-full h-full" iconSize={32} />
@@ -119,15 +122,17 @@ export function PGCard({ pg }: { pg: PGLite }) {
 
       {/* ── Content ── */}
       <div className="p-3.5 sm:p-4 flex flex-col flex-1">
-        {/* Header with Name & Rating */}
+        {/* Header with Name */}
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-blue-600 transition-colors">
             {pg.name}
           </h3>
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-700 text-[11px] font-extrabold shrink-0">
-            <Star size={11} className="fill-amber-500 text-amber-500" />
-            <span>4.8</span>
-          </div>
+          {pg.verified && (
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-extrabold shrink-0">
+              <CheckCircle2 size={10} strokeWidth={3} />
+              <span>Verified</span>
+            </div>
+          )}
         </div>
 
         {/* Location */}

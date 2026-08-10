@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Calendar, Clock, User, Phone, Mail, CheckCircle2, ChevronRight } from 'lucide-react'
+import { X, Calendar, User, Phone, Mail, CheckCircle2, ChevronRight } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'

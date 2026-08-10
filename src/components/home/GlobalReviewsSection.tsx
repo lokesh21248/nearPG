@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Star, MessageSquare } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { useGlobalReviews } from '../../hooks/useReviews'
 
 const COLORS = [

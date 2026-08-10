@@ -13,7 +13,6 @@ interface SortBarProps {
 }
 
 export function SortBar({ total, sort, onChange }: SortBarProps) {
-  const currentLabel = SORT_OPTIONS.find(o => o.value === sort)?.label ?? 'Newest First'
 
   return (
     <div className="flex items-center justify-between mb-5 gap-3">

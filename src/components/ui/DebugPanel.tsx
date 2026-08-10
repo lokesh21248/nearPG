@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Bug, X, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react'
+import { Bug, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { useUserLocation } from '../../contexts/LocationContext'
 import type { PGLite } from '../../types/pg.types'
 

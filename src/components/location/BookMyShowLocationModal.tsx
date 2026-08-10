@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Search, MapPin, Navigation, Crosshair, X, ChevronRight, ChevronDown,
+  Search, MapPin, Crosshair, X, ChevronRight, ChevronDown,
   Building2, Sparkles, Clock, Trash2, AlertCircle, Check
 } from 'lucide-react'
 import { useUserLocation, RecentSearchItem } from '../../contexts/LocationContext'

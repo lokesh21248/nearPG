@@ -45,7 +45,7 @@ export function PGListingSection({ title, subtitle, linkText, linkUrl, listings 
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[1, 2, 3].map(i => <LoadingSkeleton key={i} variant="card" />)}
           </div>
         ) : listings.length === 0 ? (
@@ -58,7 +58,7 @@ export function PGListingSection({ title, subtitle, linkText, linkUrl, listings 
             variants={container}
             initial="hidden"
             animate={inView ? 'show' : 'hidden'}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
           >
             {listings.map(pg => (
               <motion.div key={pg.id} variants={cardItem}>

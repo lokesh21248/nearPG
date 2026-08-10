@@ -35,7 +35,7 @@ export function useAddReview() {
 }
 
 export function useDeleteReview() {
-  const { firebaseUser } = useFirebaseAuth()
+  const { firebaseUser: _firebaseUser } = useFirebaseAuth()
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => reviewsService.deleteReview(id),

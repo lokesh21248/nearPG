@@ -1,7 +1,6 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Navigation, MapPin, SlidersHorizontal, ArrowRight, Compass, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Navigation, MapPin, SlidersHorizontal, ArrowRight, Compass, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useUserLocation } from '../../contexts/LocationContext'
 import { useSearchListings } from '../../hooks/useListings'
 import { calculateDistance, formatDistance } from '../../lib/geo'
@@ -147,7 +146,7 @@ export function NearbyPGsSection() {
       isFallbackMode: true,
       fallbackReason: `Showing top recommended PGs across all locations`,
     }
-  }, [rawListings, location.latitude, location.longitude, location.cityName, location.radius])
+  }, [rawListings, location.latitude, location.longitude, location.cityName, location.radius, location.stateName, location.detectionType])
 
   const hasLocation = Boolean(location.latitude || location.cityName)
 
@@ -169,8 +168,8 @@ export function NearbyPGsSection() {
               <Navigation size={12} className="text-blue-600 animate-pulse" />
               Geolocation Discovery
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
-              🔥 Popular Near You
+            <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
+              PGs near you
             </h2>
             <p className="text-xs sm:text-base text-slate-500 font-medium mt-1">
               {isFallbackMode ? (
@@ -272,7 +271,7 @@ export function NearbyPGsSection() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {finalFilteredListings.map((pg) => {
               const formattedDist = pg.distanceKm && pg.distanceKm !== Infinity
                 ? formatDistance(pg.distanceKm)

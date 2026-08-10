@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import { MapPin, Navigation, Compass, Phone, ArrowLeft, ExternalLink, ShieldCheck, Sparkles, Star } from 'lucide-react'
+import { MapPin, Compass, ArrowLeft } from 'lucide-react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { useUserLocation } from '../contexts/LocationContext'
 import { useSearchListings } from '../hooks/useListings'
-import { calculateDistance, formatDistance } from '../lib/geo'
+import { calculateDistance } from '../lib/geo'
 import { PropertyBottomSheet } from '../components/map/PropertyBottomSheet'
 
 export default function MapPage() {
   const { location, setIsModalOpen, detectCurrentLocation } = useUserLocation()
-  const { data: listings = [], isLoading } = useSearchListings({ available_only: 'true' })
+  const { data: listings = [] } = useSearchListings({ available_only: 'true' })
 
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
