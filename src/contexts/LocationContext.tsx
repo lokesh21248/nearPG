@@ -84,11 +84,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       console.error('Failed to parse recent searches from localStorage', e)
     }
-    return [
-      { id: 'hyd', name: 'Hyderabad', subtitle: 'Telangana', type: 'city', stateId: '', cityName: 'Hyderabad', stateName: 'Telangana', timestamp: Date.now() },
-      { id: 'kphb', name: 'KPHB', subtitle: 'Hyderabad, Telangana', type: 'area', stateId: '', cityName: 'Hyderabad', areaName: 'KPHB', stateName: 'Telangana', timestamp: Date.now() - 1000 },
-      { id: 'madhapur', name: 'Madhapur', subtitle: 'Hyderabad, Telangana', type: 'area', stateId: '', cityName: 'Hyderabad', areaName: 'Madhapur', stateName: 'Telangana', timestamp: Date.now() - 2000 },
-    ]
+    return []
   })
 
   const [isDetecting, setIsDetecting] = useState(false)

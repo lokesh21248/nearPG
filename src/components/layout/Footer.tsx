@@ -14,21 +14,13 @@ const FOOTER_LINKS = {
     { label: 'FAQ', href: '/faq' },
     { label: 'Safety Tips', href: '/safety' },
   ],
-  cities: [
-    { label: 'PG in Bangalore', href: '/search?city=Bangalore' },
-    { label: 'PG in Pune', href: '/search?city=Pune' },
-    { label: 'PG in Delhi', href: '/search?city=Delhi' },
-    { label: 'PG in Mumbai', href: '/search?city=Mumbai' },
-    { label: 'PG in Hyderabad', href: '/search?city=Hyderabad' },
-    { label: 'PG in Chennai', href: '/search?city=Chennai' },
-  ],
 }
 
 export function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 pt-20 pb-24 sm:pb-10">
       <div className="page-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
 
           {/* ── Brand ── */}
           <div className="lg:col-span-2 space-y-5">
@@ -38,7 +30,7 @@ export function Footer() {
               <span className="text-xl font-black text-white" style={{ fontFamily: 'Outfit,sans-serif' }}>NearPG</span>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
-              India's most trusted PG discovery platform. Find verified PGs, hostels, and coliving spaces — zero brokerage, direct owner contact.
+              Find PGs, hostels, and coliving spaces.
             </p>
 
             {/* Contact info */}
@@ -105,19 +97,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* ── Top Cities ── */}
-          <div>
-            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-5">Top Cities</h4>
-            <ul className="space-y-3">
-              {FOOTER_LINKS.cities.map(l => (
-                <li key={l.label}>
-                  <Link to={l.href} className="text-sm text-slate-400 hover:text-white transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+
         </div>
 
         {/* ── Newsletter strip ── */}

@@ -5,12 +5,6 @@ import { motion } from 'framer-motion'
 import LocationSelectorGroup from '../ui/LocationSelectorGroup'
 import { useUserLocation } from '../../contexts/LocationContext'
 
-const STATS = [
-  { value: '2500+',    label: 'Verified PGs',   icon: '⭐' },
-  { value: 'Direct',   label: 'Owner Contact',  icon: '📞' },
-  { value: 'Zero',     label: 'Brokerage Fee',  icon: '💰' },
-  { value: 'Instant',  label: 'Visit Booking',  icon: '⚡' },
-]
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } }
 const item      = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as any } } }
@@ -64,18 +58,6 @@ export function HeroSearch() {
         
         <motion.div variants={container} initial="hidden" animate="show" className="w-full max-w-4xl mx-auto">
 
-          {/* Badges bar */}
-          <motion.div variants={item} className="flex items-center justify-center gap-2 flex-wrap mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full border border-blue-400/30 bg-white/10 backdrop-blur-sm text-blue-200 text-[11px] sm:text-xs font-semibold">
-              <Sparkles size={12} className="text-blue-300" />
-              India's #1 PG Discovery Platform
-            </div>
-            <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 backdrop-blur-sm text-amber-200 text-[11px] sm:text-xs font-bold">
-              <Star size={12} className="fill-amber-400 text-amber-400" />
-              2500+ Verified PGs
-            </div>
-          </motion.div>
-
           {/* Hero Headline */}
           <motion.h1 variants={item} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] sm:leading-[1.05] tracking-tight mb-4 sm:mb-6"
             style={{ fontFamily: 'Outfit,sans-serif' }}>
@@ -83,7 +65,7 @@ export function HeroSearch() {
           </motion.h1>
 
           <motion.p variants={item} className="text-sm sm:text-lg text-blue-100/90 max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed font-medium px-2">
-            Discover verified PGs, Hostels &amp; Coliving spaces with real reviews, zero brokerage, and direct owner contact.
+            Discover PGs, Hostels &amp; Coliving spaces with real reviews.
           </motion.p>
 
           {/* Detect Location Button */}
@@ -182,19 +164,6 @@ export function HeroSearch() {
                   </div>
                 </div>
               </form>
-            </div>
-          </motion.div>
-
-          {/* ── Stats bar ── */}
-          <motion.div variants={item} className="mt-8 sm:mt-12">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 max-w-2xl mx-auto">
-              {STATS.map(s => (
-                <div key={s.label} className="flex flex-col items-center gap-0.5 sm:gap-1 px-3 py-3 sm:px-4 sm:py-4 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15">
-                  <span className="text-xl sm:text-2xl leading-none">{s.icon}</span>
-                  <span className="text-lg sm:text-2xl font-black text-white mt-1" style={{ fontFamily: 'Outfit,sans-serif' }}>{s.value}</span>
-                  <span className="text-blue-200/80 text-[11px] sm:text-xs font-medium">{s.label}</span>
-                </div>
-              ))}
             </div>
           </motion.div>
 

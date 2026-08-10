@@ -8,7 +8,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { useUserLocation } from '../contexts/LocationContext'
 import { useSearchListings } from '../hooks/useListings'
 import { calculateDistance, formatDistance } from '../lib/geo'
-import { NoImageFallback } from '../components/ui/NoImageFallback'
+import { PropertyBottomSheet } from '../components/map/PropertyBottomSheet'
 
 export default function MapPage() {
   const { location, setIsModalOpen, detectCurrentLocation } = useUserLocation()
@@ -115,15 +115,17 @@ export default function MapPage() {
       const isSelected = pg.id === selectedPgId
       const priceText = `₹${pg.price.toLocaleString('en-IN')}`
 
-      const badgeBg = pg.verified
+      const badgeBg = isSelected 
+        ? 'bg-slate-900 border-slate-700 scale-110'
+        : pg.verified
         ? 'bg-emerald-600 border-emerald-400'
         : pg.featured
         ? 'bg-blue-600 border-blue-400'
-        : 'bg-slate-900 border-slate-700'
+        : 'bg-slate-800 border-slate-600'
 
       const markerHtml = `
-        <div class="transition-all transform ${isSelected ? 'scale-110 z-50' : 'hover:scale-105'}">
-          <div class="px-2.5 py-1 rounded-full text-white font-black text-xs shadow-lg border ${badgeBg} flex items-center gap-1">
+        <div class="transition-all transform ${isSelected ? 'z-[1000]' : 'hover:scale-105'}">
+          <div class="px-2.5 py-1 rounded-full text-white font-black text-xs shadow-lg border ${badgeBg} flex items-center gap-1 transition-all">
             <span>${priceText}</span>
           </div>
         </div>
@@ -136,11 +138,17 @@ export default function MapPage() {
         iconAnchor: [30, 13],
       })
 
-      const marker = L.marker([pg.lat, pg.lng], { icon: customIcon }).addTo(map)
+      const marker = L.marker([pg.lat, pg.lng], { 
+        icon: customIcon,
+        zIndexOffset: isSelected ? 1000 : 0
+      }).addTo(map)
 
       marker.on('click', () => {
         setSelectedPgId(pg.id)
-        map.flyTo([pg.lat, pg.lng], 15, { duration: 0.8 })
+        // Offset the center so the marker isn't hidden by the bottom sheet
+        const targetPoint = map.project([pg.lat, pg.lng], 15).subtract([0, -120])
+        const targetLatLng = map.unproject(targetPoint, 15)
+        map.flyTo(targetLatLng, 15, { duration: 0.6 })
       })
 
       markersRef.current[pg.id] = marker
@@ -178,24 +186,25 @@ export default function MapPage() {
         <meta name="description" content="Discover PGs and hostels near you on an interactive live map with real prices and instant directions." />
       </Helmet>
 
-      <div className="relative w-full h-[calc(100vh-64px)] flex flex-col overflow-hidden bg-slate-100">
+      {/* Main Container - use flex-1 to fill available space gracefully, without fixed viewport hacks */}
+      <div className="flex-1 w-full relative flex flex-col bg-slate-100 overflow-hidden">
         
         {/* Top Control Bar */}
-        <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between gap-3 pointer-events-none">
+        <div className="absolute top-4 left-4 right-4 z-[400] flex items-center justify-between gap-3 pointer-events-none pt-[env(safe-area-inset-top)]">
           <div className="pointer-events-auto flex items-center gap-2">
             <Link
               to="/"
-              className="p-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 hover:text-slate-900 shadow-lg font-semibold text-xs flex items-center gap-1.5 transition-transform active:scale-95"
+              className="min-h-[44px] min-w-[44px] px-3 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 hover:text-slate-900 shadow-lg font-semibold text-sm flex items-center justify-center gap-1.5 transition-transform active:scale-95"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={20} />
               <span className="hidden sm:inline">Back</span>
             </Link>
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-3.5 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 font-bold text-xs shadow-lg flex items-center gap-2 hover:bg-blue-50 transition-transform active:scale-95"
+              className="min-h-[44px] px-4 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 font-bold text-sm shadow-lg flex items-center gap-2 hover:bg-blue-50 transition-transform active:scale-95"
             >
-              <MapPin size={14} className="text-blue-600" />
+              <MapPin size={16} className="text-blue-600" />
               <span>{location.cityName || 'Select Location'}</span>
             </button>
           </div>
@@ -203,87 +212,24 @@ export default function MapPage() {
           <div className="pointer-events-auto">
             <button
               onClick={handleRecenter}
-              className="w-10 h-10 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-blue-600 shadow-lg flex items-center justify-center font-bold hover:bg-blue-50 transition-transform active:scale-95"
+              className="min-h-[44px] min-w-[44px] rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 text-blue-600 shadow-lg flex items-center justify-center hover:bg-blue-50 transition-transform active:scale-95"
               title="Re-center to your location"
             >
-              <Compass size={20} />
+              <Compass size={22} />
             </button>
           </div>
         </div>
 
-        {/* Map Container */}
+        {/* Map Container - fills available flex space */}
         <div ref={mapContainerRef} className="w-full flex-1 z-10 bg-slate-200" />
 
-        {/* Bottom Selected PG Drawer / Cards Carousel */}
-        <div className="absolute bottom-16 sm:bottom-4 left-0 right-0 z-20 px-4 pointer-events-none">
-          {selectedPg ? (
-            <div className="pointer-events-auto max-w-lg mx-auto bg-white rounded-3xl p-4 sm:p-5 shadow-2xl border border-slate-200/80 backdrop-blur-md">
-              <div className="flex gap-4">
-                {/* Thumbnail */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 bg-slate-100 relative">
-                  {selectedPg.pg_images?.[0]?.image_url ? (
-                    <img
-                      src={selectedPg.pg_images[0].image_url}
-                      alt={selectedPg.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <NoImageFallback className="absolute inset-0 w-full h-full" iconSize={24} />
-                  )}
-                  {selectedPg.verified && (
-                    <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-bold flex items-center gap-0.5 shadow-sm">
-                      <ShieldCheck size={10} />
-                      Verified
-                    </div>
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2">
-                      <h4 className="font-extrabold text-slate-900 text-sm sm:text-base truncate">
-                        {selectedPg.name}
-                      </h4>
-                      <span className="text-blue-600 font-black text-sm sm:text-base shrink-0">
-                        ₹{selectedPg.price.toLocaleString('en-IN')}<span className="text-[10px] text-slate-400 font-medium">/mo</span>
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-500 truncate mt-0.5">
-                      📍 {selectedPg.area}, {selectedPg.city}
-                    </p>
-
-                    {selectedPg.distanceKm && selectedPg.distanceKm !== Infinity && (
-                      <p className="text-[11px] font-bold text-emerald-600 mt-1 flex items-center gap-1">
-                        <Navigation size={11} />
-                        <span>{formatDistance(selectedPg.distanceKm)} away</span>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
-                    {selectedPg.lat && selectedPg.lng && (
-                      <button
-                        onClick={() => handleGetDirections(selectedPg.lat!, selectedPg.lng!)}
-                        className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <ExternalLink size={13} />
-                        Directions
-                      </button>
-                    )}
-                    <Link
-                      to={`/pg/${selectedPg.id}`}
-                      className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1 transition-colors text-center"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : null}
+        {/* Bottom Sheet Component */}
+        <div className="z-[500]">
+          <PropertyBottomSheet 
+            pg={selectedPg} 
+            onClose={() => setSelectedPgId(null)} 
+            onGetDirections={handleGetDirections}
+          />
         </div>
       </div>
     </PageWrapper>

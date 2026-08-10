@@ -34,7 +34,7 @@ export function PopularCities() {
             Explore By City
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Find PGs in Top Cities</h2>
-          <p className="text-xs sm:text-base text-slate-500 max-w-xl mx-auto mt-2">Discover thousands of verified PGs, hostels, and coliving spaces in India's top cities</p>
+          <p className="text-xs sm:text-base text-slate-500 max-w-xl mx-auto mt-2">Discover verified PGs, hostels, and coliving spaces in top cities</p>
         </div>
 
         <motion.div
